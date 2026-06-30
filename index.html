@@ -14,6 +14,8 @@
 <link rel="icon" type="image/png" sizes="32x32"  href="icon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180"      href="icon-180.png">
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <style>
   html, body { margin:0; padding:0; background:#eef0f2; min-height:100vh;
                -webkit-tap-highlight-color:transparent; }
@@ -519,30 +521,43 @@
 <div class="cc-toast" id="cc-toast">저장됨</div>
 </div>
 
-<script>
-  (function() {
-    if (!window.storage) {
-      window.storage = {
-        async get(key, shared) {
-          const raw = localStorage.getItem('cc_' + key);
-          if (raw === null) { throw new Error('not found'); }
-          return { key, value: raw, shared: !!shared };
-        },
-        async set(key, value, shared) {
-          localStorage.setItem('cc_' + key, value);
-          return { key, value, shared: !!shared };
-        },
-        async delete(key, shared) {
-          localStorage.removeItem('cc_' + key);
-          return { key, deleted: true, shared: !!shared };
-        },
-        async list(prefix, shared) {
-          const p = 'cc_' + (prefix || '');
-          const keys = Object.keys(localStorage).filter(k => k.startsWith(p)).map(k => k.slice(3));
-          return { keys, prefix, shared: !!shared };
+<script>  (function() {
+    const firebaseConfig = {
+      apiKey: "AIzaSyCYaoJJr7ZXJ3-JRXEDUb-UcnArRE4gfzs",
+      authDomain: "counseling-compass.firebaseapp.com",
+      projectId: "counseling-compass",
+      storageBucket: "counseling-compass.firebasestorage.app",
+      messagingSenderId: "666059547277",
+      appId: "1:666059547277:web:4b83eb09e7d5306f66f8c4"
+    };
+
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const DATA_DOC = db.collection('compass').doc('data');
+
+    window.storage = {
+      async get(key, shared) {
+        const snap = await DATA_DOC.get();
+        if (!snap.exists || snap.data()[key] === undefined) {
+          throw new Error('not found');
         }
-      };
-    }
+        return { key, value: snap.data()[key], shared: !!shared };
+      },
+      async set(key, value, shared) {
+        await DATA_DOC.set({ [key]: value }, { merge: true });
+        return { key, value, shared: !!shared };
+      },
+      async delete(key, shared) {
+        await DATA_DOC.update({ [key]: firebase.firestore.FieldValue.delete() });
+        return { key, deleted: true, shared: !!shared };
+      },
+      async list(prefix, shared) {
+        const snap = await DATA_DOC.get();
+        const allKeys = snap.exists ? Object.keys(snap.data()) : [];
+        const keys = prefix ? allKeys.filter(k => k.startsWith(prefix)) : allKeys;
+        return { keys, prefix, shared: !!shared };
+      }
+    };
   })();
 
 (function() {
