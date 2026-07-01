@@ -768,13 +768,13 @@
 
   const GRAD_COURSE_SUBJECTS = [
     { id: 'g1', name: '1학차 수강과목', topics: [
-      { id: 'g1t1', name: '가족상담 및 치료', done: true, memo: '', credits: 3, courseType: 'adv' },
-      { id: 'g1t2', name: '상담이론과 실제', done: true, memo: '', credits: 3, courseType: 'adv' },
+      { id: 'g1t1', name: '가족상담 및 치료',    done: true, memo: '', credits: 3, courseType: 'adv' },
+      { id: 'g1t2', name: '상담이론과 실제',      done: true, memo: '', credits: 3, courseType: 'elec' },
     ]},
     { id: 'g2', name: '2학차 수강과목', topics: [
-      { id: 'g2t1', name: '상담윤리', done: true, memo: '', credits: 3, courseType: 'adv' },
-      { id: 'g2t2', name: '이상심리 및 심리치료', done: true, memo: '', credits: 3, courseType: 'adv' },
-      { id: 'g2t3', name: '실존과 심리치료의 만남', done: true, memo: '', credits: 2, courseType: 'elec' },
+      { id: 'g2t1', name: '상담윤리',              done: true, memo: '', credits: 3, courseType: 'adv' },
+      { id: 'g2t2', name: '이상심리 및 심리치료',  done: true, memo: '', credits: 3, courseType: 'elec' },
+      { id: 'g2t3', name: '실존과 심리치료의 만남',done: true, memo: '', credits: 2, courseType: 'elec' },
     ]},
   ];
 
@@ -936,13 +936,14 @@
       subjects = [...GRAD_COURSE_SUBJECTS, ...subjects];
       await saveSubjects();
     } else {
-      // migrate credits onto existing grad topics that lack them
-      const creditMap = {};
-      GRAD_COURSE_SUBJECTS.forEach(s => s.topics.forEach(t => { creditMap[t.id] = t.credits; }));
+      // force-correct credits AND courseType for known topic IDs
+      const knownMap = {};
+      GRAD_COURSE_SUBJECTS.forEach(s => s.topics.forEach(t => { knownMap[t.id] = { credits: t.credits, courseType: t.courseType }; }));
       let changed = false;
       subjects.forEach(s => s.topics.forEach(t => {
-        if (t.credits === undefined && creditMap[t.id] !== undefined) {
-          t.credits = creditMap[t.id]; changed = true;
+        if (knownMap[t.id]) {
+          if (t.credits !== knownMap[t.id].credits)       { t.credits = knownMap[t.id].credits; changed = true; }
+          if (t.courseType !== knownMap[t.id].courseType) { t.courseType = knownMap[t.id].courseType; changed = true; }
         }
       }));
       if (changed) await saveSubjects();
@@ -1242,7 +1243,11 @@
               <input type="checkbox" ${t.done ? 'checked' : ''} data-check="${s.id}|${t.id}"/>
               <span class="cc-topic-text ${t.done ? 'done' : ''}">${escapeHtml(t.name)}</span>
               ${isGrad && t.credits ? `<span class="cc-credit-badge">${t.credits}학점</span>` : ''}
-              ${isGrad && t.courseType ? `<span class="cc-course-type ${t.courseType}">${t.courseType === 'req' ? '전공필수' : t.courseType === 'adv' ? '전공심화' : '전공선택'}</span>` : ''}
+              ${isGrad ? `<select class="cc-coursetype-sel" data-coursetypeedit="${s.id}|${t.id}" style="border:1px solid var(--line);border-radius:6px;padding:2px 4px;font-size:11px;font-family:var(--body);color:var(--ink-soft);">
+                <option value="elec" ${(t.courseType||'elec')==='elec'?'selected':''}>전공선택</option>
+                <option value="req"  ${t.courseType==='req'?'selected':''}>전공필수</option>
+                <option value="adv"  ${t.courseType==='adv'?'selected':''}>전공심화</option>
+              </select>` : ''}
               <button class="cc-memo-toggle ${t.memo ? 'has-memo' : ''}" data-memotoggle="${s.id}|${t.id}" title="메모">✎</button>
               <button class="cc-del-btn" data-deltopic="${s.id}|${t.id}">삭제</button>
               <textarea class="cc-topic-memo" placeholder="이 항목에 대한 메모…" data-memo="${s.id}|${t.id}">${escapeHtml(t.memo || '')}</textarea>
@@ -1372,6 +1377,16 @@
       el.addEventListener('click', e => e.stopPropagation());
       el.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') root.querySelector(`[data-addtopic="${el.getAttribute('data-newtopic')}"]`).click();
+      });
+    });
+
+    root.querySelectorAll('[data-coursetypeedit]').forEach(el => {
+      el.addEventListener('click', e => e.stopPropagation());
+      el.addEventListener('change', async () => {
+        const [sid, tid] = el.getAttribute('data-coursetypeedit').split('|');
+        const s = subjects.find(x => x.id === sid);
+        const t = s && s.topics.find(x => x.id === tid);
+        if (t) { t.courseType = el.value; await saveSubjects(); renderCreditsTotal(); }
       });
     });
 
