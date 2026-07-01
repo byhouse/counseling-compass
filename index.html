@@ -186,6 +186,7 @@
     cursor: pointer;
   }
   .cc-topic span.done { text-decoration: line-through; color: var(--ink-soft); }
+  .cc-subject--grad .cc-topic span.done { text-decoration: none; color: var(--ink); }
   .cc-topic-text { flex: 1; }
   .cc-del-btn {
     background: none; border: none; color: var(--ink-soft);
@@ -1005,7 +1006,7 @@
       const isGrad = s.name.includes('수강과목');
       const subCredits = isGrad ? s.topics.reduce((sum, t) => sum + (Number(t.credits) || 0), 0) : 0;
       return `
-      <div class="cc-subject" data-sid="${s.id}">
+      <div class="cc-subject ${isGrad ? 'cc-subject--grad' : ''}" data-sid="${s.id}">
         <div class="cc-subject-head" data-toggle="${s.id}">
           <span class="cc-caret">▾</span>
           <div class="cc-order-btns">
