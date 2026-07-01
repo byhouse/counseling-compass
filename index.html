@@ -1760,6 +1760,8 @@
   });
 
   // ── Goals ────────────────────────────────────────────────────────────────
+  let editingGoalId = null;
+
   function renderGoals() {
     const root = document.getElementById('cc-goals-list');
     const count = document.getElementById('cc-goals-count');
@@ -1773,9 +1775,17 @@
     root.innerHTML = goals.map(g => `
       <div class="cc-goal-item" data-gid="${g.id}">
         <input type="checkbox" ${g.done ? 'checked' : ''} data-goalcheck="${g.id}"/>
-        <span class="cc-goal-text ${g.done ? 'done' : ''}" data-goaledit="${g.id}" contenteditable="false" title="탭하면 수정">${escapeHtml(g.text)}</span>
+        ${editingGoalId === g.id
+          ? `<input class="cc-goal-edit-input" data-goaleditinput="${g.id}" value="${escapeHtml(g.text)}" style="flex:1;border:1px solid var(--sage);border-radius:6px;padding:4px 8px;font-size:13.5px;font-family:var(--body);"/>`
+          : `<span class="cc-goal-text ${g.done ? 'done' : ''}">${escapeHtml(g.text)}</span>`
+        }
         <span class="cc-goal-semester">${escapeHtml(g.semester)}</span>
-        <button class="cc-del-btn" data-goaldelete="${g.id}">삭제</button>
+        ${editingGoalId === g.id
+          ? `<button class="cc-del-btn" data-goalsave="${g.id}" style="color:var(--sage);opacity:1">저장</button>
+             <button class="cc-del-btn" data-goalcanceledit="${g.id}">취소</button>`
+          : `<button class="cc-del-btn" data-goalstartedit="${g.id}" style="color:var(--ink-soft);opacity:0.7">수정</button>
+             <button class="cc-del-btn" data-goaldelete="${g.id}">삭제</button>`
+        }
       </div>`).join('') || '<div style="font-size:13px;color:var(--ink-soft);padding:8px 0;">아직 목표가 없어요. 추가해보세요!</div>';
 
     root.querySelectorAll('[data-goalcheck]').forEach(el => {
@@ -1784,28 +1794,43 @@
         if (g) { g.done = el.checked; await saveGoals(); renderGoals(); }
       });
     });
+    root.querySelectorAll('[data-goalstartedit]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        editingGoalId = el.getAttribute('data-goalstartedit');
+        renderGoals();
+        setTimeout(() => {
+          const inp = root.querySelector(`[data-goaleditinput="${editingGoalId}"]`);
+          if (inp) { inp.focus(); inp.select(); }
+        }, 30);
+      });
+    });
+    root.querySelectorAll('[data-goalsave]').forEach(el => {
+      el.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const id = el.getAttribute('data-goalsave');
+        const inp = root.querySelector(`[data-goaleditinput="${id}"]`);
+        const g = goals.find(x => x.id === id);
+        if (g && inp && inp.value.trim()) { g.text = inp.value.trim(); await saveGoals(); }
+        editingGoalId = null; renderGoals();
+      });
+    });
+    root.querySelectorAll('[data-goalcanceledit]').forEach(el => {
+      el.addEventListener('click', (e) => { e.stopPropagation(); editingGoalId = null; renderGoals(); });
+    });
+    root.querySelectorAll('[data-goaleditinput]').forEach(el => {
+      el.addEventListener('click', e => e.stopPropagation());
+      el.addEventListener('keydown', e => {
+        if (e.key === 'Enter') root.querySelector(`[data-goalsave="${el.getAttribute('data-goaleditinput')}"]`).click();
+        if (e.key === 'Escape') { editingGoalId = null; renderGoals(); }
+      });
+    });
     root.querySelectorAll('[data-goaldelete]').forEach(el => {
       el.addEventListener('click', async (e) => {
         e.stopPropagation();
         goals = goals.filter(g => g.id !== el.getAttribute('data-goaldelete'));
         await saveGoals(); renderGoals();
       });
-    });
-    // inline edit: click text to edit
-    root.querySelectorAll('[data-goaledit]').forEach(span => {
-      span.addEventListener('click', () => {
-        span.contentEditable = 'true'; span.focus();
-        const range = document.createRange(); range.selectNodeContents(span);
-        const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
-      });
-      span.addEventListener('blur', async () => {
-        span.contentEditable = 'false';
-        const id = span.getAttribute('data-goaledit');
-        const g = goals.find(x => x.id === id);
-        if (g && span.textContent.trim()) { g.text = span.textContent.trim(); await saveGoals(); }
-        else renderGoals();
-      });
-      span.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); span.blur(); } });
     });
   }
   document.getElementById('cc-goals-head') && document.getElementById('cc-goals-head').addEventListener('click', () => {
@@ -1879,21 +1904,83 @@
   }
 
   // ── Dictionary ───────────────────────────────────────────────────────────
+  let editingDictId = null;
+  let dictPage = 0;
+  const DICT_PER_PAGE = 10;
+
   function renderDict() {
     const root = document.getElementById('cc-dict-list');
     if (!root) return;
-    const filtered = dictSearch ? dictEntries.filter(e => e.term.toLowerCase().includes(dictSearch.toLowerCase()) || e.definition.toLowerCase().includes(dictSearch.toLowerCase())) : [...dictEntries];
+    const filtered = dictSearch
+      ? dictEntries.filter(e => e.term.toLowerCase().includes(dictSearch.toLowerCase()) || e.definition.toLowerCase().includes(dictSearch.toLowerCase()))
+      : [...dictEntries];
     filtered.sort((a,b) => a.term.localeCompare(b.term, 'ko'));
-    if (!filtered.length) { root.innerHTML = `<div class="cc-empty">${dictSearch ? '검색 결과가 없어요.' : '아직 등록된 용어가 없어요. 첫 번째 용어를 추가해보세요!'}</div>`; return; }
-    root.innerHTML = filtered.map(e => `
+
+    if (!filtered.length) {
+      root.innerHTML = `<div class="cc-empty">${dictSearch ? '검색 결과가 없어요.' : '아직 등록된 용어가 없어요. 첫 번째 용어를 추가해보세요!'}</div>`;
+      return;
+    }
+
+    const totalPages = Math.ceil(filtered.length / DICT_PER_PAGE);
+    if (dictPage >= totalPages) dictPage = totalPages - 1;
+    const paginated = filtered.slice(dictPage * DICT_PER_PAGE, (dictPage + 1) * DICT_PER_PAGE);
+
+    root.innerHTML = `
+      <div class="cc-notes-meta-bar">
+        <span>총 ${filtered.length}개</span>
+        ${totalPages > 1 ? `<div style="display:flex;align-items:center;gap:6px;">
+          <button class="cc-pager-btn" id="cc-dict-prev" ${dictPage===0?'disabled':''}>‹</button>
+          <span style="font-size:12px">${dictPage+1}/${totalPages}</span>
+          <button class="cc-pager-btn" id="cc-dict-next" ${dictPage===totalPages-1?'disabled':''}>›</button>
+        </div>` : ''}
+      </div>
+      ${paginated.map(e => `
       <div class="cc-dict-entry">
-        <div class="cc-dict-term">${escapeHtml(e.term)}<button class="cc-del-btn" data-dictdelete="${e.id}">삭제</button></div>
+        <div class="cc-dict-term">
+          ${escapeHtml(e.term)}
+          <div style="display:flex;gap:4px;">
+            <button class="cc-del-btn" data-dictedit="${e.id}" style="color:var(--sage);opacity:1">수정</button>
+            <button class="cc-del-btn" data-dictdelete="${e.id}">삭제</button>
+          </div>
+        </div>
         <div class="cc-dict-def">${escapeHtml(e.definition)}</div>
         ${e.source ? `<div class="cc-dict-src">📚 ${escapeHtml(e.source)}</div>` : ''}
-      </div>`).join('');
+      </div>`).join('')}
+      ${totalPages > 1 ? `<div class="cc-notes-meta-bar" style="margin-top:8px">
+        <button class="cc-pager-btn" id="cc-dict-prev2" ${dictPage===0?'disabled':''}>‹ 이전</button>
+        <span style="font-size:12px">${dictPage+1} / ${totalPages}</span>
+        <button class="cc-pager-btn" id="cc-dict-next2" ${dictPage===totalPages-1?'disabled':''}>다음 ›</button>
+      </div>` : ''}
+    `;
+
+    root.querySelector('#cc-dict-prev') && root.querySelector('#cc-dict-prev').addEventListener('click', () => { dictPage--; renderDict(); });
+    root.querySelector('#cc-dict-next') && root.querySelector('#cc-dict-next').addEventListener('click', () => { dictPage++; renderDict(); });
+    root.querySelector('#cc-dict-prev2') && root.querySelector('#cc-dict-prev2').addEventListener('click', () => { dictPage--; renderDict(); });
+    root.querySelector('#cc-dict-next2') && root.querySelector('#cc-dict-next2').addEventListener('click', () => { dictPage++; renderDict(); });
+
+    root.querySelectorAll('[data-dictedit]').forEach(el => {
+      el.addEventListener('click', () => {
+        const id = el.getAttribute('data-dictedit');
+        const e = dictEntries.find(x => x.id === id);
+        if (!e) return;
+        editingDictId = id;
+        document.getElementById('cc-dict-term').value = e.term;
+        document.getElementById('cc-dict-def').value = e.definition;
+        document.getElementById('cc-dict-src').value = e.source || '';
+        document.getElementById('cc-dict-save-btn').textContent = '수정 완료';
+        document.getElementById('cc-dict-save-btn').dataset.editId = id;
+        document.getElementById('cc-dict-term').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        document.getElementById('cc-dict-term').focus();
+      });
+    });
     root.querySelectorAll('[data-dictdelete]').forEach(el => {
       el.addEventListener('click', async () => {
         dictEntries = dictEntries.filter(e => e.id !== el.getAttribute('data-dictdelete'));
+        if (editingDictId === el.getAttribute('data-dictdelete')) {
+          editingDictId = null;
+          document.getElementById('cc-dict-save-btn').textContent = '사전에 추가';
+          ['cc-dict-term','cc-dict-def','cc-dict-src'].forEach(id => document.getElementById(id).value = '');
+        }
         await saveDictEntries(); renderDict();
       });
     });
@@ -1916,7 +2003,14 @@
     const term = document.getElementById('cc-dict-term').value.trim();
     const def = document.getElementById('cc-dict-def').value.trim();
     if (!term || !def) return;
-    dictEntries.push({ id: uid(), term, definition: def, source: document.getElementById('cc-dict-src').value.trim(), created: Date.now() });
+    if (editingDictId) {
+      const e = dictEntries.find(x => x.id === editingDictId);
+      if (e) { e.term = term; e.definition = def; e.source = document.getElementById('cc-dict-src').value.trim(); }
+      editingDictId = null;
+      document.getElementById('cc-dict-save-btn').textContent = '사전에 추가';
+    } else {
+      dictEntries.push({ id: uid(), term, definition: def, source: document.getElementById('cc-dict-src').value.trim(), created: Date.now() });
+    }
     document.getElementById('cc-dict-term').value = '';
     document.getElementById('cc-dict-def').value = '';
     document.getElementById('cc-dict-src').value = '';
