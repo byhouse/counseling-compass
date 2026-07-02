@@ -596,8 +596,97 @@
   .cc-form-label { font-size: 12px; font-weight: 700; color: var(--ink-soft); margin-bottom: 3px; display: block; }
   .cc-form-save-btn { border: none; background: var(--rose); color: white; border-radius: 8px; padding: 9px 18px; font-size: 13px; cursor: pointer; font-family: var(--body); font-weight: 600; }
   .cc-form-cancel-btn { border: 1px solid var(--line); background: var(--paper); color: var(--ink-soft); border-radius: 8px; padding: 9px 16px; font-size: 13px; cursor: pointer; font-family: var(--body); font-weight: 600; }
-  .cc-pager-btn:not(:disabled):hover { background: var(--paper); }
-  .cc-dict-ai-btn { background: var(--ink); color: white; border: none; border-radius: 8px; padding: 8px 10px; font-size: 12px; cursor: pointer; font-family: var(--body); white-space: nowrap; }
+  /* ── Theory Comparison ── */
+  .cc-theory-table { width:100%; border-collapse:collapse; font-size:12.5px; }
+  .cc-theory-table th { background:var(--ink); color:white; padding:8px 10px; text-align:left; font-size:12px; }
+  .cc-theory-table td { padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.5; }
+  .cc-theory-table tr:nth-child(even) td { background:#f7f7f9; }
+  .cc-theory-table tr:hover td { background:var(--sage-soft); }
+  .cc-theory-name { font-weight:700; color:var(--ink); white-space:nowrap; }
+  .cc-theory-add-wrap { border:1px dashed var(--line); border-radius:10px; padding:10px 14px; }
+  .cc-theory-add-toggle { font-size:13px; font-weight:600; color:var(--ink-soft); cursor:pointer; list-style:none; }
+  .cc-theory-note-card { background:var(--paper-raised); border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-bottom:8px; }
+  .cc-theory-note-name { font-weight:700; font-size:14px; color:var(--rose); margin-bottom:4px; }
+  .cc-theory-note-text { font-size:13.5px; line-height:1.6; color:var(--ink); }
+
+  /* ── Flashcard ── */
+  .cc-fc-progress-bar-wrap { height:6px; background:var(--line); border-radius:3px; overflow:hidden; margin-bottom:10px; }
+  .cc-fc-progress-bar { height:100%; background:var(--sage); border-radius:3px; transition:width .4s ease; }
+  .cc-fc-stats { font-size:12.5px; color:var(--ink-soft); text-align:right; margin-bottom:12px; }
+  .cc-fc-card {
+    background:var(--paper-raised); border:2px solid var(--line); border-radius:16px;
+    min-height:200px; padding:30px 24px; display:flex; align-items:center; justify-content:center;
+    text-align:center; cursor:pointer; margin-bottom:14px; box-shadow:0 2px 8px rgba(0,0,0,0.06);
+  }
+  .cc-fc-front { font-family:var(--display); font-size:22px; font-weight:700; color:var(--ink); }
+  .cc-fc-back { font-size:14px; line-height:1.7; color:var(--ink); white-space:pre-wrap; }
+  .cc-fc-btns, .cc-fc-result-btns { display:flex; gap:10px; justify-content:center; }
+  .cc-fc-btn { border:none; border-radius:10px; padding:12px 24px; font-size:14px; font-weight:700; cursor:pointer; font-family:var(--body); }
+  .cc-fc-btn.flip { background:var(--ink); color:white; flex:1; }
+  .cc-fc-btn.again { background:#f5ede8; color:var(--rose); flex:1; }
+  .cc-fc-btn.got { background:var(--sage-soft); color:var(--sage); flex:1; }
+
+  /* ── Self Reflection ── */
+  .cc-ref-card { background:var(--paper-raised); border:none; border-radius:12px; padding:0; margin-bottom:10px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.07),0 0 0 1px var(--line); }
+  .cc-ref-card-head { padding:10px 14px 8px; border-bottom:1px solid var(--line); background:#f9f8f7; display:flex; align-items:center; gap:8px; }
+  .cc-ref-type-badge { font-size:12px; font-weight:700; }
+  .cc-ref-datetime { font-size:11px; color:var(--ink-soft); }
+  .cc-ref-body { padding:12px 14px; font-size:13.5px; line-height:1.7; white-space:pre-wrap; color:var(--ink); }
+
+  /* ── Paper Management ── */
+  .cc-paper-card { background:var(--paper-raised); border-radius:12px; border:none; overflow:hidden; margin-bottom:12px; box-shadow:0 1px 3px rgba(0,0,0,0.07),0 0 0 1px var(--line); }
+  .cc-paper-head { padding:12px 16px; background:#f9f8f7; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:8px; }
+  .cc-paper-title-text { font-family:var(--display); font-size:15px; font-weight:700; color:var(--ink); flex:1; }
+  .cc-paper-status-badge { font-size:11.5px; padding:3px 10px; border-radius:999px; font-weight:700; flex:0 0 auto; }
+  .cc-paper-status-badge.idea { background:#e9eaf2; color:var(--ink-soft); }
+  .cc-paper-status-badge.planning { background:#fde8e5; color:var(--rose); }
+  .cc-paper-status-badge.inprogress { background:#fdf3e0; color:#b07d1a; }
+  .cc-paper-status-badge.writing { background:var(--sage-soft); color:var(--sage); }
+  .cc-paper-status-badge.done { background:var(--ink); color:white; }
+  .cc-paper-body { padding:12px 16px; }
+  .cc-paper-section { margin-bottom:8px; }
+  .cc-paper-section-label { font-size:11px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; margin-bottom:3px; }
+  .cc-paper-section-text { font-size:13.5px; line-height:1.6; color:var(--ink); }
+
+  /* ── Session & Supervision ── */
+  .cc-session-summary { background:var(--ink); color:white; border-radius:10px; padding:12px 16px; margin-bottom:14px; display:flex; gap:20px; flex-wrap:wrap; }
+  .cc-sess-stat { text-align:center; }
+  .cc-sess-stat-num { font-family:var(--display); font-size:22px; font-weight:700; }
+  .cc-sess-stat-label { font-size:11px; opacity:.75; }
+  .cc-sess-card, .cc-sup-card { background:var(--paper-raised); border-radius:12px; padding:14px; margin-bottom:10px; border:none; box-shadow:0 1px 3px rgba(0,0,0,0.07),0 0 0 1px var(--line); }
+  .cc-sess-head { display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap; }
+  .cc-sess-code { font-family:var(--display); font-size:14px; font-weight:700; color:var(--ink); }
+  .cc-sess-meta { font-size:12px; color:var(--ink-soft); }
+  .cc-sess-type-badge { font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px; background:var(--rose-soft); color:var(--rose); }
+  .cc-sess-section { font-size:13.5px; line-height:1.6; color:var(--ink); margin-bottom:6px; }
+  .cc-sess-section-label { font-size:11px; font-weight:700; color:var(--ink-soft); }
+
+  /* ── Case Conceptualization ── */
+  .cc-con-card { background:var(--paper-raised); border-radius:12px; padding:14px; margin-bottom:10px; box-shadow:0 1px 3px rgba(0,0,0,0.07),0 0 0 1px var(--line); }
+  .cc-con-theory-badge { display:inline-block; font-size:11.5px; font-weight:700; padding:3px 10px; border-radius:999px; background:var(--sage-soft); color:var(--sage); margin-bottom:8px; }
+  .cc-con-field { margin-bottom:10px; }
+  .cc-con-field-label { font-size:11px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; margin-bottom:3px; }
+  .cc-con-field-text { font-size:13.5px; line-height:1.6; white-space:pre-wrap; }
+
+  /* ── Self-Care ── */
+  .cc-selfcare-today { background:var(--paper-raised); border-radius:12px; padding:16px; margin-bottom:16px; border:1px solid var(--line); }
+  .cc-sc-head { font-family:var(--display); font-size:15px; font-weight:700; margin-bottom:14px; color:var(--ink); }
+  .cc-sc-row { margin-bottom:12px; }
+  .cc-sc-row label { font-size:13px; font-weight:600; color:var(--ink-soft); display:block; margin-bottom:5px; }
+  .cc-sc-row input[type=range] { width:calc(100% - 56px); accent-color:var(--sage); }
+  .cc-sc-stress-label, #cc-sc-sleep-val { font-size:12.5px; color:var(--sage); font-weight:700; margin-left:8px; }
+  .cc-sc-chips { display:flex; flex-wrap:wrap; gap:6px; }
+  .cc-sc-chip { border:1px solid var(--line); background:var(--paper); border-radius:999px; padding:5px 12px; font-size:12.5px; cursor:pointer; font-family:var(--body); color:var(--ink-soft); }
+  .cc-sc-chip.on { background:var(--ink); color:white; border-color:var(--ink); }
+  .cc-sc-mood-row { display:flex; gap:10px; }
+  .cc-sc-mood-btn { font-size:26px; background:none; border:2px solid transparent; border-radius:50%; cursor:pointer; padding:4px; }
+  .cc-sc-mood-btn.on { border-color:var(--sage); background:var(--sage-soft); }
+  .cc-sc-history-card { background:var(--paper-raised); border-radius:10px; padding:12px 14px; margin-bottom:8px; border:1px solid var(--line); display:flex; gap:12px; align-items:flex-start; }
+  .cc-sc-history-date { font-size:11.5px; font-weight:700; color:var(--ink-soft); min-width:70px; }
+  .cc-sc-history-mood { font-size:20px; }
+  .cc-sc-history-detail { font-size:12.5px; color:var(--ink-soft); line-height:1.5; flex:1; }
+
+ { background: var(--ink); color: white; border: none; border-radius: 8px; padding: 8px 10px; font-size: 12px; cursor: pointer; font-family: var(--body); white-space: nowrap; }
   .cc-dict-ai-btn:disabled { opacity: 0.5; cursor: wait; }
   .cc-dict-naver-btn { background: #03c75a; color: white; border: none; border-radius: 8px; padding: 8px 10px; font-size: 12px; cursor: pointer; font-family: var(--body); white-space: nowrap; }
   .cc-dict-ai-result { background: var(--sage-soft); border: 1px solid var(--sage); border-radius: 8px; padding: 12px; margin-bottom: 10px; font-size: 13px; line-height: 1.6; }
@@ -764,6 +853,222 @@
     <div id="cc-book-list"></div>
   </div>
 
+  <!-- Theory Comparison -->
+  <div id="cc-panel-theory" class="cc-hidden">
+    <div id="cc-theory-table-wrap"></div>
+    <div style="margin-top:14px;">
+      <details class="cc-theory-add-wrap">
+        <summary class="cc-theory-add-toggle">＋ 나만의 이론 노트 추가</summary>
+        <div class="cc-dict-form" style="margin-top:10px;">
+          <label class="cc-form-label">이론명</label>
+          <input id="cc-theory-note-name" type="text" placeholder="예: 해결중심단기치료"/>
+          <label class="cc-form-label">메모</label>
+          <textarea id="cc-theory-note-text" placeholder="핵심 개념, 느낀 점…" style="min-height:70px"></textarea>
+          <button class="cc-form-save-btn" id="cc-theory-note-save">추가</button>
+        </div>
+      </details>
+      <div id="cc-theory-notes-list" style="margin-top:10px;"></div>
+    </div>
+  </div>
+
+  <!-- Flashcard -->
+  <div id="cc-panel-flashcard" class="cc-hidden">
+    <div id="cc-flashcard-setup">
+      <div class="cc-dict-form" style="margin-bottom:12px;">
+        <p style="font-size:13.5px;color:var(--ink-soft);margin:0 0 12px;">상담사전에 저장된 용어로 자동으로 퀴즈를 만들어요.</p>
+        <label class="cc-form-label">학습 모드</label>
+        <select id="cc-fc-mode">
+          <option value="term2def">용어 → 정의</option>
+          <option value="def2term">정의 → 용어</option>
+          <option value="random">랜덤</option>
+        </select>
+        <button class="cc-form-save-btn" id="cc-fc-start-btn" style="margin-top:8px;">퀴즈 시작</button>
+      </div>
+    </div>
+    <div id="cc-flashcard-game" style="display:none;">
+      <div class="cc-fc-progress-bar-wrap"><div class="cc-fc-progress-bar" id="cc-fc-progress-bar"></div></div>
+      <div class="cc-fc-stats" id="cc-fc-stats"></div>
+      <div class="cc-fc-card" id="cc-fc-card">
+        <div class="cc-fc-front" id="cc-fc-front"></div>
+        <div class="cc-fc-back" id="cc-fc-back" style="display:none;"></div>
+      </div>
+      <div class="cc-fc-btns" id="cc-fc-btns">
+        <button class="cc-fc-btn flip" id="cc-fc-flip-btn">뒤집기 (정의 보기)</button>
+      </div>
+      <div class="cc-fc-result-btns" id="cc-fc-result-btns" style="display:none;">
+        <button class="cc-fc-btn again" id="cc-fc-again-btn">🔄 다시볼게요</button>
+        <button class="cc-fc-btn got" id="cc-fc-got-btn">✓ 알겠어요</button>
+      </div>
+      <button class="cc-del-btn" id="cc-fc-end-btn" style="margin-top:16px;display:block;width:100%;text-align:center;font-size:13px;">퀴즈 종료</button>
+    </div>
+    <div id="cc-flashcard-done" style="display:none;text-align:center;padding:30px 10px;">
+      <div style="font-size:40px;margin-bottom:10px;">🎉</div>
+      <div id="cc-fc-done-msg" style="font-size:16px;font-weight:700;margin-bottom:8px;"></div>
+      <div id="cc-fc-done-sub" style="font-size:13px;color:var(--ink-soft);margin-bottom:16px;"></div>
+      <button class="cc-form-save-btn" id="cc-fc-retry-btn">다시 시작</button>
+    </div>
+  </div>
+
+  <!-- Self Reflection -->
+  <div id="cc-panel-reflection" class="cc-hidden">
+    <div class="cc-dict-form">
+      <label class="cc-form-label">성찰 유형</label>
+      <select id="cc-ref-type">
+        <option value="study">📚 공부 성찰 — 오늘 배운 것</option>
+        <option value="self">🪞 자기 이해 — 나는 어떤 상담자가 되고 싶은가</option>
+        <option value="emotion">💭 감정 인식 — 오늘 나의 상태</option>
+        <option value="growth">🌱 성장 기록 — 달라지고 있는 나</option>
+        <option value="free">✏️ 자유 성찰</option>
+      </select>
+      <label class="cc-form-label" id="cc-ref-prompt-label"></label>
+      <textarea id="cc-ref-text" placeholder="" style="min-height:130px"></textarea>
+      <button class="cc-form-save-btn" id="cc-ref-save-btn">성찰 기록하기</button>
+    </div>
+    <div class="cc-filter-row" id="cc-ref-filter-row">
+      <button class="cc-tag-btn selected" data-reffilter="all">전체</button>
+      <button class="cc-tag-btn" data-reffilter="study">📚 공부</button>
+      <button class="cc-tag-btn" data-reffilter="self">🪞 자기이해</button>
+      <button class="cc-tag-btn" data-reffilter="emotion">💭 감정</button>
+      <button class="cc-tag-btn" data-reffilter="growth">🌱 성장</button>
+      <button class="cc-tag-btn" data-reffilter="free">✏️ 자유</button>
+    </div>
+    <div id="cc-ref-list"></div>
+  </div>
+
+  <!-- Paper Management -->
+  <div id="cc-panel-paper" class="cc-hidden">
+    <div class="cc-dict-form">
+      <label class="cc-form-label">논문/연구 제목 (아이디어)</label>
+      <input id="cc-paper-title" type="text" placeholder="예: 상담자 소진과 자기돌봄의 관계"/>
+      <label class="cc-form-label">연구 질문</label>
+      <textarea id="cc-paper-question" placeholder="이 연구로 알고 싶은 것은?" style="min-height:60px"></textarea>
+      <label class="cc-form-label">배경 / 필요성</label>
+      <textarea id="cc-paper-background" placeholder="왜 이 연구가 필요한가?" style="min-height:60px"></textarea>
+      <label class="cc-form-label">방법론 아이디어</label>
+      <textarea id="cc-paper-method" placeholder="질적? 양적? 연구참여자는? 측정도구는?" style="min-height:60px"></textarea>
+      <label class="cc-form-label">진행 상태</label>
+      <select id="cc-paper-status">
+        <option value="idea">💡 아이디어</option>
+        <option value="planning">📋 기획 중</option>
+        <option value="inprogress">⚙️ 진행 중</option>
+        <option value="writing">✍️ 작성 중</option>
+        <option value="done">✅ 완성</option>
+      </select>
+      <button class="cc-form-save-btn" id="cc-paper-save-btn">저장</button>
+    </div>
+    <div id="cc-paper-list"></div>
+  </div>
+
+  <!-- Session Records -->
+  <div id="cc-panel-session" class="cc-hidden">
+    <div class="cc-session-summary" id="cc-session-summary"></div>
+    <div class="cc-dict-form">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div><label class="cc-form-label">날짜</label><input id="cc-sess-date" type="date"/></div>
+        <div><label class="cc-form-label">사례코드 (익명)</label><input id="cc-sess-code" type="text" placeholder="예: A-1" maxlength="10"/></div>
+        <div><label class="cc-form-label">회기 번호</label><input id="cc-sess-num" type="number" min="1" value="1" placeholder="회기"/></div>
+        <div><label class="cc-form-label">유형</label>
+          <select id="cc-sess-type">
+            <option value="individual">개인상담</option>
+            <option value="group">집단상담</option>
+            <option value="family">가족상담</option>
+            <option value="intake">접수면접</option>
+            <option value="assess">심리평가</option>
+          </select>
+        </div>
+      </div>
+      <label class="cc-form-label">주호소 / 주제</label>
+      <input id="cc-sess-topic" type="text" placeholder="이번 회기 주요 주제"/>
+      <label class="cc-form-label">회기 내용 요약</label>
+      <textarea id="cc-sess-content" placeholder="주요 내용, 개입, 내담자 반응…" style="min-height:80px"></textarea>
+      <label class="cc-form-label">다음 회기 계획</label>
+      <textarea id="cc-sess-next" placeholder="다음 회기에서 다룰 것…" style="min-height:50px"></textarea>
+      <button class="cc-form-save-btn" id="cc-sess-save-btn">회기 기록 저장</button>
+    </div>
+    <div id="cc-sess-list"></div>
+  </div>
+
+  <!-- Supervision -->
+  <div id="cc-panel-supervision" class="cc-hidden">
+    <div class="cc-dict-form">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div><label class="cc-form-label">날짜</label><input id="cc-sup-date" type="date"/></div>
+        <div><label class="cc-form-label">수퍼바이저</label><input id="cc-sup-name" type="text" placeholder="수퍼바이저 이름/구분"/></div>
+      </div>
+      <label class="cc-form-label">다룬 사례 (코드)</label>
+      <input id="cc-sup-case" type="text" placeholder="예: A-1, 3회기"/>
+      <label class="cc-form-label">피드백 내용</label>
+      <textarea id="cc-sup-feedback" placeholder="수퍼바이저가 준 피드백…" style="min-height:80px"></textarea>
+      <label class="cc-form-label">나의 통찰 / 배운 점</label>
+      <textarea id="cc-sup-insight" placeholder="이번 수퍼비전에서 새롭게 깨달은 것…" style="min-height:70px"></textarea>
+      <label class="cc-form-label">실천 계획</label>
+      <textarea id="cc-sup-action" placeholder="다음 회기에서 적용해볼 것…" style="min-height:50px"></textarea>
+      <button class="cc-form-save-btn" id="cc-sup-save-btn">수퍼비전 기록 저장</button>
+    </div>
+    <div id="cc-sup-list"></div>
+  </div>
+
+  <!-- Case Conceptualization -->
+  <div id="cc-panel-concept" class="cc-hidden">
+    <div class="cc-dict-form">
+      <label class="cc-form-label">사례코드 (익명)</label>
+      <input id="cc-con-code" type="text" placeholder="예: A-1"/>
+      <label class="cc-form-label">이론적 틀</label>
+      <select id="cc-con-theory">
+        <option value="psycho">정신역동/정신분석</option>
+        <option value="cbt">인지행동치료 (CBT)</option>
+        <option value="person">인간중심 상담</option>
+        <option value="adler">아들러 심리학</option>
+        <option value="exist">실존주의 상담</option>
+        <option value="family">가족체계 이론</option>
+      </select>
+      <div id="cc-con-fields"></div>
+      <label class="cc-form-label">개입 방향 / 목표</label>
+      <textarea id="cc-con-goal" placeholder="상담 목표 및 주요 개입 방향…" style="min-height:60px"></textarea>
+      <button class="cc-form-save-btn" id="cc-con-save-btn">사례개념화 저장</button>
+    </div>
+    <div id="cc-con-list"></div>
+  </div>
+
+  <!-- Self-care -->
+  <div id="cc-panel-selfcare" class="cc-hidden">
+    <div class="cc-selfcare-today" id="cc-selfcare-today">
+      <div class="cc-sc-head">오늘의 자기돌봄 체크인</div>
+      <div class="cc-sc-row"><label>😴 수면 (시간)</label><input type="range" id="cc-sc-sleep" min="0" max="12" step="0.5" value="7"/><span id="cc-sc-sleep-val">7시간</span></div>
+      <div class="cc-sc-row"><label>💪 활동/운동</label>
+        <div class="cc-sc-chips" id="cc-sc-activity">
+          <button class="cc-sc-chip" data-val="walk">산책</button>
+          <button class="cc-sc-chip" data-val="exercise">운동</button>
+          <button class="cc-sc-chip" data-val="yoga">요가/명상</button>
+          <button class="cc-sc-chip" data-val="rest">완전휴식</button>
+          <button class="cc-sc-chip" data-val="none">없음</button>
+        </div>
+      </div>
+      <div class="cc-sc-row"><label>😊 오늘 기분</label>
+        <div class="cc-sc-mood-row" id="cc-sc-mood">
+          <button class="cc-sc-mood-btn" data-mood="1">😞</button>
+          <button class="cc-sc-mood-btn" data-mood="2">😕</button>
+          <button class="cc-sc-mood-btn" data-mood="3">😐</button>
+          <button class="cc-sc-mood-btn" data-mood="4">🙂</button>
+          <button class="cc-sc-mood-btn" data-mood="5">😄</button>
+        </div>
+      </div>
+      <div class="cc-sc-row"><label>🔥 스트레스 수준</label><input type="range" id="cc-sc-stress" min="1" max="5" step="1" value="2"/><span id="cc-sc-stress-val" class="cc-sc-stress-label">낮음</span></div>
+      <div class="cc-sc-row"><label>🤝 사회적 연결</label>
+        <div class="cc-sc-chips" id="cc-sc-social">
+          <button class="cc-sc-chip" data-val="friend">친구</button>
+          <button class="cc-sc-chip" data-val="family">가족</button>
+          <button class="cc-sc-chip" data-val="peer">동료/동기</button>
+          <button class="cc-sc-chip" data-val="alone">혼자</button>
+        </div>
+      </div>
+      <label class="cc-form-label" style="margin-top:10px;">오늘 나를 돌본 것 / 메모</label>
+      <textarea id="cc-sc-note" placeholder="오늘 나 자신을 위해 한 일, 느낀 점…" style="min-height:60px;width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-family:var(--body);font-size:13.5px;box-sizing:border-box;outline:none;"></textarea>
+      <button class="cc-form-save-btn" id="cc-sc-save-btn" style="margin-top:10px;">오늘 기록 저장</button>
+    </div>
+    <div id="cc-sc-history"></div>
+  </div>
+
   <div id="cc-panel-notes" class="cc-hidden">
     <div class="cc-note-form">
       <div class="cc-tag-row" id="cc-tag-row">
@@ -923,14 +1228,22 @@
   };
 
   const TAB_DEFS = {
-    planner: '스터디 플래너',
-    daily: '일별 체크',
-    qual: '자격 체크',
-    notes: '연구노트',
-    dict: '상담사전',
-    reading: '독서노트',
+    daily:     '일별 체크',
+    planner:   '스터디 플래너',
+    notes:     '연구노트',
+    dict:      '상담사전',
+    reading:   '독서노트',
+    theory:    '이론 비교',
+    flashcard: '플래시카드',
+    reflection:'자기성찰',
+    paper:     '논문 관리',
+    session:   '회기 기록',
+    supervision:'수퍼비전',
+    concept:   '사례개념화',
+    selfcare:  '자기돌봄',
+    qual:      '자격 체크',
   };
-  const DEFAULT_TAB_ORDER = ['daily', 'planner', 'notes', 'dict', 'reading', 'qual'];
+  const DEFAULT_TAB_ORDER = ['daily','planner','notes','dict','reading','theory','flashcard','reflection','paper','session','supervision','concept','selfcare','qual'];
 
   let subjects = [];
   let notes = [];
@@ -986,6 +1299,13 @@
     try { const di = await window.storage.get('dict-entries', false); dictEntries = di ? JSON.parse(di.value) : []; } catch(e) { dictEntries = []; }
     try { const re = await window.storage.get('reading-entries', false); readingEntries = re ? JSON.parse(re.value) : []; } catch(e) { readingEntries = []; }
     try { const st = await window.storage.get('subject-tasks', false); subjectTasks = st ? JSON.parse(st.value) : {}; } catch(e) { subjectTasks = {}; }
+    try { const tn = await window.storage.get('theory-notes', false); theoryNotes = tn ? JSON.parse(tn.value) : []; } catch(e) { theoryNotes = []; }
+    try { const rf = await window.storage.get('reflections', false); reflections = rf ? JSON.parse(rf.value) : []; } catch(e) { reflections = []; }
+    try { const pp = await window.storage.get('papers', false); papers = pp ? JSON.parse(pp.value) : []; } catch(e) { papers = []; }
+    try { const ss = await window.storage.get('sessions', false); sessions = ss ? JSON.parse(ss.value) : []; } catch(e) { sessions = []; }
+    try { const sv = await window.storage.get('supervisions', false); supervisions = sv ? JSON.parse(sv.value) : []; } catch(e) { supervisions = []; }
+    try { const cc = await window.storage.get('concepts', false); concepts = cc ? JSON.parse(cc.value) : []; } catch(e) { concepts = []; }
+    try { const sc = await window.storage.get('selfcare-log', false); selfcareLog = sc ? JSON.parse(sc.value) : {}; } catch(e) { selfcareLog = {}; }
     activeTab = tabOrder[0];
 
     // migrate: add grad course subjects once if not present
@@ -1015,11 +1335,8 @@
     renderCalendar();
     renderStreak();
     renderQual();
-    renderDdays();
-    renderGoals();
-    renderDict();
-    renderReading();
-    renderGradTrack();
+    renderDdays(); renderGoals(); renderDict(); renderReading(); renderGradTrack();
+    renderTheory(); renderReflection(); renderPapers(); renderSessions(); renderSupervisions(); renderConcepts(); renderSelfcareToday(); renderSelfcareHistory();
     selectDay(todayKey());
     updateCompass();
   }
@@ -1029,7 +1346,14 @@
   async function saveDictEntries()  { try { await window.storage.set('dict-entries', JSON.stringify(dictEntries), false); showToast('저장됨'); } catch(e) {} }
   async function saveReadingEntries(){ try { await window.storage.set('reading-entries', JSON.stringify(readingEntries), false); showToast('저장됨'); } catch(e) {} }
   async function saveSubjectTasks() { try { await window.storage.set('subject-tasks', JSON.stringify(subjectTasks), false); showToast('저장됨'); } catch(e) {} }
-  async function saveTabOrder()     { try { await window.storage.set('tab-order', JSON.stringify(tabOrder), false); } catch(e) {} }
+  async function saveTheoryNotes()  { try { await window.storage.set('theory-notes', JSON.stringify(theoryNotes), false); showToast('저장됨'); } catch(e) {} }
+  async function saveReflections()  { try { await window.storage.set('reflections', JSON.stringify(reflections), false); showToast('저장됨'); } catch(e) {} }
+  async function savePapers()       { try { await window.storage.set('papers', JSON.stringify(papers), false); showToast('저장됨'); } catch(e) {} }
+  async function saveSessions()     { try { await window.storage.set('sessions', JSON.stringify(sessions), false); showToast('저장됨'); } catch(e) {} }
+  async function saveSupervisions() { try { await window.storage.set('supervisions', JSON.stringify(supervisions), false); showToast('저장됨'); } catch(e) {} }
+  async function saveConcepts()     { try { await window.storage.set('concepts', JSON.stringify(concepts), false); showToast('저장됨'); } catch(e) {} }
+  async function saveSelfcareLog()  { try { await window.storage.set('selfcare-log', JSON.stringify(selfcareLog), false); showToast('저장됨'); } catch(e) {} }
+
 
   function renderTabs() {
     const row = document.getElementById('cc-tabs-row');
@@ -1075,7 +1399,7 @@
   }
 
   function showActivePanel() {
-    ['planner','daily','qual','notes','dict','reading'].forEach(key => {
+    Object.keys(TAB_DEFS).forEach(key => {
       const el = document.getElementById(`cc-panel-${key}`);
       if (el) el.classList.toggle('cc-hidden', key !== activeTab);
     });
@@ -1964,6 +2288,19 @@
   let editingReadingId = null;
   let selectedBookFilter = 'all';
 
+  // New feature state
+  let theoryNotes = [];
+  let reflections = []; let selectedRefFilter = 'all';
+  let papers = []; let editingPaperId = null;
+  let sessions = []; let editingSessionId = null;
+  let supervisions = []; let editingSupervisedId = null;
+  let concepts = []; let editingConceptId = null;
+  let selfcareLog = {}; // {YYYY-MM-DD: {sleep,mood,stress,activity,social,note}}
+  let scSelectedActivity = []; let scSelectedSocial = []; let scSelectedMood = 0;
+
+  // Flashcard state
+  let fcCards = []; let fcIndex = 0; let fcScore = 0; let fcAgain = []; let fcMode = 'term2def'; let fcFlipped = false;
+
   function renderDict() {
     const root = document.getElementById('cc-dict-list');
     if (!root) return;
@@ -2192,6 +2529,348 @@
     }
     resetBookForm();
     await saveReadingEntries(); renderReading();
+  });
+
+  // ── THEORY COMPARISON ─────────────────────────────────────────────────────
+  const THEORIES = [
+    { name:'정신분석/정신역동', core:'무의식, 방어기제, 전이, 저항', tech:'자유연상, 꿈분석, 해석', view:'인간은 무의식적 갈등의 지배를 받음', role:'중립적 전문가, 해석자', strength:'깊은 무의식 탐색, 장기치료 효과', limit:'시간·비용, 검증 어려움' },
+    { name:'아들러 심리학',    core:'열등감, 우월 추구, 생활양식, 사회적 관심', tech:'생활양식 분석, 초기기억, 격려', view:'목적지향적 존재, 사회적 존재', role:'협력자, 교사', strength:'격려와 희망 강조, 단기치료 가능', limit:'동기 측정 어려움' },
+    { name:'인간중심 상담',    core:'공감, 무조건적 긍정적 존중, 진실성', tech:'적극적 경청, 반영, 명료화', view:'자기실현 경향성을 가진 긍정적 존재', role:'촉진자, 동반자', strength:'치료적 관계 강조, 내담자 자율성', limit:'심각한 정신병리에 제한' },
+    { name:'게슈탈트',         core:'알아차림, 접촉, 현재 중심, 미해결과제', tech:'빈 의자, 역할극, 신체인식', view:'통합적 전체로서의 인간', role:'촉진자, 현재에 함께하는 자', strength:'창의적 기법, 신체·정서 통합', limit:'구조화 부족, 훈련 필요' },
+    { name:'CBT',             core:'자동적 사고, 핵심신념, 인지왜곡', tech:'인지재구성, 행동실험, 소크라테스식 질문', view:'사고가 감정·행동에 영향', role:'협력적 교사', strength:'단기치료, 연구근거, 구조화', limit:'정서·관계 측면 소홀 가능' },
+    { name:'REBT',            core:'비합리적 신념(ABC), 당위적 사고', tech:'논박, 수치심공격, 역할극', view:'인간은 합리/비합리적 사고 모두 가능', role:'교사, 도전자', strength:'빠른 효과, 예방적', limit:'지나친 논리 강조' },
+    { name:'현실치료',         core:'선택이론, WDEP, 기본욕구', tech:'현재행동탐색, 평가, 계획', view:'선택하는 책임 있는 존재', role:'교사, 코치', strength:'책임감 강조, 명확한 구조', limit:'과거·무의식 무시' },
+    { name:'실존주의',         core:'실존적 불안, 자유·책임, 의미, 죽음', tech:'현존분석, 의미탐색, 실존적 직면', view:'자유롭고 책임 있는 존재', role:'동반자, 실존적 탐색자', strength:'의미·가치 탐색, 인간본질', limit:'비구조적, 측정 어려움' },
+    { name:'해결중심단기치료', core:'해결중심, 예외상황, 기적질문', tech:'기적질문, 척도질문, 예외질문', view:'이미 해결 능력을 가진 존재', role:'협력자, 강점 탐색자', strength:'단기·효율적, 강점 중심', limit:'심각한 문제에 한계' },
+  ];
+
+  function renderTheory() {
+    const wrap = document.getElementById('cc-theory-table-wrap');
+    if (!wrap) return;
+    wrap.innerHTML = `<div style="overflow-x:auto;">
+      <table class="cc-theory-table">
+        <thead><tr>
+          <th>이론</th><th>핵심 개념</th><th>주요 기법</th><th>인간관</th><th>상담자 역할</th><th>강점</th><th>한계</th>
+        </tr></thead>
+        <tbody>${THEORIES.map(t=>`<tr>
+          <td><span class="cc-theory-name">${escapeHtml(t.name)}</span></td>
+          <td>${escapeHtml(t.core)}</td><td>${escapeHtml(t.tech)}</td>
+          <td>${escapeHtml(t.view)}</td><td>${escapeHtml(t.role)}</td>
+          <td>${escapeHtml(t.strength)}</td><td>${escapeHtml(t.limit)}</td>
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>`;
+
+    const notesRoot = document.getElementById('cc-theory-notes-list');
+    if (!notesRoot) return;
+    notesRoot.innerHTML = theoryNotes.map(n=>`
+      <div class="cc-theory-note-card">
+        <div class="cc-theory-note-name">${escapeHtml(n.name)}</div>
+        <div class="cc-theory-note-text">${escapeHtml(n.text)}</div>
+        <div style="text-align:right;margin-top:6px;"><button class="cc-del-btn" data-deltheorynote="${n.id}">삭제</button></div>
+      </div>`).join('') || '';
+    notesRoot.querySelectorAll('[data-deltheorynote]').forEach(el=>{
+      el.addEventListener('click', async()=>{ theoryNotes=theoryNotes.filter(x=>x.id!==el.getAttribute('data-deltheorynote')); await saveTheoryNotes(); renderTheory(); });
+    });
+  }
+  document.getElementById('cc-theory-note-save') && document.getElementById('cc-theory-note-save').addEventListener('click', async()=>{
+    const name=document.getElementById('cc-theory-note-name').value.trim();
+    const text=document.getElementById('cc-theory-note-text').value.trim();
+    if(!name||!text) return;
+    theoryNotes.push({id:uid(),name,text,created:Date.now()});
+    document.getElementById('cc-theory-note-name').value=''; document.getElementById('cc-theory-note-text').value='';
+    await saveTheoryNotes(); renderTheory();
+  });
+
+  // ── FLASHCARD ─────────────────────────────────────────────────────────────
+  const REF_PROMPTS = {
+    study:  '오늘 공부에서 가장 인상 깊었던 것은 무엇인가요?',
+    self:   '나는 어떤 상담자가 되고 싶은가요? 오늘 그 방향으로 나아갔나요?',
+    emotion:'지금 나의 상태는 어떤가요? 무엇을 느끼고 있나요?',
+    growth: '최근 나에게서 달라진 것이 있다면 무엇인가요?',
+    free:   '지금 마음에 떠오르는 것을 자유롭게 써보세요.',
+  };
+  function updateRefPrompt() {
+    const t = document.getElementById('cc-ref-type') && document.getElementById('cc-ref-type').value;
+    const lbl = document.getElementById('cc-ref-prompt-label');
+    const ta = document.getElementById('cc-ref-text');
+    if (lbl) lbl.textContent = REF_PROMPTS[t] || '';
+    if (ta) ta.placeholder = REF_PROMPTS[t] || '';
+  }
+  document.getElementById('cc-ref-type') && document.getElementById('cc-ref-type').addEventListener('change', updateRefPrompt);
+  setTimeout(updateRefPrompt, 100);
+
+  document.getElementById('cc-fc-start-btn') && document.getElementById('cc-fc-start-btn').addEventListener('click', () => {
+    if (!dictEntries.length) { alert('상담사전에 용어를 먼저 추가해주세요!'); return; }
+    fcMode = document.getElementById('cc-fc-mode').value;
+    fcCards = [...dictEntries].sort(() => Math.random() - 0.5);
+    fcIndex = 0; fcScore = 0; fcAgain = []; fcFlipped = false;
+    document.getElementById('cc-flashcard-setup').style.display = 'none';
+    document.getElementById('cc-flashcard-game').style.display = '';
+    document.getElementById('cc-flashcard-done').style.display = 'none';
+    renderFlashcard();
+  });
+  function renderFlashcard() {
+    if (fcIndex >= fcCards.length) { showFcDone(); return; }
+    const c = fcCards[fcIndex];
+    const pct = Math.round((fcIndex / fcCards.length) * 100);
+    document.getElementById('cc-fc-progress-bar').style.width = pct + '%';
+    document.getElementById('cc-fc-stats').textContent = `${fcIndex + 1} / ${fcCards.length} | ✓ ${fcScore}`;
+    const showTerm = fcMode === 'term2def' || (fcMode === 'random' && Math.random() > 0.5);
+    document.getElementById('cc-fc-front').textContent = showTerm ? c.term : c.definition;
+    document.getElementById('cc-fc-back').textContent = showTerm ? c.definition : c.term;
+    document.getElementById('cc-fc-front').style.display = '';
+    document.getElementById('cc-fc-back').style.display = 'none';
+    document.getElementById('cc-fc-btns').style.display = 'flex';
+    document.getElementById('cc-fc-result-btns').style.display = 'none';
+    fcFlipped = false;
+  }
+  function showFcDone() {
+    if (fcAgain.length > 0) {
+      fcCards = [...fcAgain]; fcAgain = []; fcIndex = 0;
+      document.getElementById('cc-fc-done-msg').textContent = `한 번 더! 다시볼 카드 ${fcCards.length}개`;
+      document.getElementById('cc-fc-done-sub').textContent = '다시볼게요 카드를 한 번 더 복습해요.';
+    } else {
+      document.getElementById('cc-flashcard-game').style.display = 'none';
+      document.getElementById('cc-flashcard-done').style.display = '';
+      document.getElementById('cc-fc-done-msg').textContent = `완료! ${fcScore}/${dictEntries.length} 알겠어요`;
+      document.getElementById('cc-fc-done-sub').textContent = fcScore === dictEntries.length ? '완벽해요! 모든 용어를 알고 있어요 🎉' : '조금 더 복습하면 완벽해져요!';
+      return;
+    }
+    renderFlashcard();
+  }
+  document.getElementById('cc-fc-flip-btn') && document.getElementById('cc-fc-flip-btn').addEventListener('click', () => {
+    document.getElementById('cc-fc-back').style.display = '';
+    document.getElementById('cc-fc-btns').style.display = 'none';
+    document.getElementById('cc-fc-result-btns').style.display = 'flex';
+    fcFlipped = true;
+  });
+  document.getElementById('cc-fc-got-btn') && document.getElementById('cc-fc-got-btn').addEventListener('click', () => { fcScore++; fcIndex++; renderFlashcard(); });
+  document.getElementById('cc-fc-again-btn') && document.getElementById('cc-fc-again-btn').addEventListener('click', () => { fcAgain.push(fcCards[fcIndex]); fcIndex++; renderFlashcard(); });
+  document.getElementById('cc-fc-end-btn') && document.getElementById('cc-fc-end-btn').addEventListener('click', () => {
+    document.getElementById('cc-flashcard-setup').style.display = '';
+    document.getElementById('cc-flashcard-game').style.display = 'none';
+    document.getElementById('cc-flashcard-done').style.display = 'none';
+  });
+  document.getElementById('cc-fc-retry-btn') && document.getElementById('cc-fc-retry-btn').addEventListener('click', () => {
+    document.getElementById('cc-flashcard-setup').style.display = '';
+    document.getElementById('cc-flashcard-done').style.display = 'none';
+  });
+
+  // ── SELF REFLECTION ────────────────────────────────────────────────────────
+  const refTypeLabel = { study:'📚 공부', self:'🪞 자기이해', emotion:'💭 감정', growth:'🌱 성장', free:'✏️ 자유' };
+  function renderReflection() {
+    const root = document.getElementById('cc-ref-list');
+    if (!root) return;
+    const filtered = selectedRefFilter==='all' ? reflections : reflections.filter(r=>r.type===selectedRefFilter);
+    const sorted = [...filtered].sort((a,b)=>b.created-a.created);
+    root.innerHTML = sorted.length ? `<div class="cc-notes-meta-bar"><span>총 ${sorted.length}개</span></div>` + sorted.map((r,i)=>`
+      <div class="cc-ref-card">
+        <div class="cc-ref-card-head">
+          <span class="cc-ref-type-badge">${refTypeLabel[r.type]||r.type}</span>
+          <span class="cc-ref-datetime">${formatDateTime(r.created)}</span>
+          <span class="cc-note-spacer"></span>
+          <button class="cc-del-btn" data-delref="${r.id}">삭제</button>
+        </div>
+        <div class="cc-ref-body">${escapeHtml(r.text)}</div>
+      </div>`).join('') : '<div class="cc-empty">아직 성찰 기록이 없어요. 오늘의 생각을 적어보세요!</div>';
+    root.querySelectorAll('[data-delref]').forEach(el=>{
+      el.addEventListener('click', async()=>{ reflections=reflections.filter(r=>r.id!==el.getAttribute('data-delref')); await saveReflections(); renderReflection(); });
+    });
+  }
+  document.getElementById('cc-ref-filter-row') && document.getElementById('cc-ref-filter-row').querySelectorAll('[data-reffilter]').forEach(btn=>{
+    btn.addEventListener('click',()=>{ selectedRefFilter=btn.getAttribute('data-reffilter');
+      document.getElementById('cc-ref-filter-row').querySelectorAll('[data-reffilter]').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); renderReflection(); });
+  });
+  document.getElementById('cc-ref-save-btn') && document.getElementById('cc-ref-save-btn').addEventListener('click', async()=>{
+    const text=document.getElementById('cc-ref-text').value.trim();
+    if (!text) return;
+    const type=document.getElementById('cc-ref-type').value;
+    reflections.push({id:uid(),type,text,created:Date.now()});
+    document.getElementById('cc-ref-text').value='';
+    await saveReflections(); renderReflection();
+  });
+
+  // ── PAPER MANAGEMENT ──────────────────────────────────────────────────────
+  const paperStatusLabel = { idea:'💡 아이디어', planning:'📋 기획 중', inprogress:'⚙️ 진행 중', writing:'✍️ 작성 중', done:'✅ 완성' };
+  function renderPapers() {
+    const root = document.getElementById('cc-paper-list');
+    if (!root) return;
+    const sorted = [...papers].sort((a,b)=>b.created-a.created);
+    root.innerHTML = sorted.length ? sorted.map((p,i)=>`
+      <div class="cc-paper-card">
+        <div class="cc-paper-head">
+          <span style="color:var(--rose);font-size:13px;font-weight:700;">${i+1}.</span>
+          <span class="cc-paper-title-text">${escapeHtml(p.title)}</span>
+          <span class="cc-paper-status-badge ${p.status}">${paperStatusLabel[p.status]||p.status}</span>
+        </div>
+        <div class="cc-paper-body">
+          ${p.question?`<div class="cc-paper-section"><div class="cc-paper-section-label">연구 질문</div><div class="cc-paper-section-text">${escapeHtml(p.question)}</div></div>`:''}
+          ${p.background?`<div class="cc-paper-section"><div class="cc-paper-section-label">배경/필요성</div><div class="cc-paper-section-text">${escapeHtml(p.background)}</div></div>`:''}
+          ${p.method?`<div class="cc-paper-section"><div class="cc-paper-section-label">방법론</div><div class="cc-paper-section-text">${escapeHtml(p.method)}</div></div>`:''}
+          <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:8px;">
+            <span style="font-size:11px;color:var(--ink-soft);">${formatDateTime(p.created)}</span>
+            <button class="cc-del-btn" data-paperedit="${p.id}" style="color:var(--sage);opacity:1">수정</button>
+            <button class="cc-del-btn" data-paperdel="${p.id}">삭제</button>
+          </div>
+        </div>
+      </div>`).join('') : '<div class="cc-empty">아직 논문 아이디어가 없어요. 연구 질문을 정리해보세요!</div>';
+    root.querySelectorAll('[data-paperdel]').forEach(el=>{ el.addEventListener('click', async()=>{ papers=papers.filter(p=>p.id!==el.getAttribute('data-paperdel')); await savePapers(); renderPapers(); }); });
+    root.querySelectorAll('[data-paperedit]').forEach(el=>{
+      el.addEventListener('click',()=>{ const p=papers.find(x=>x.id===el.getAttribute('data-paperedit')); if(!p) return;
+        editingPaperId=p.id; ['title','question','background','method'].forEach(f=>{ const el2=document.getElementById(`cc-paper-${f}`); if(el2) el2.value=p[f]||''; });
+        const sel=document.getElementById('cc-paper-status'); if(sel) sel.value=p.status;
+        document.getElementById('cc-paper-save-btn').textContent='수정 완료';
+        document.getElementById('cc-paper-title').scrollIntoView({behavior:'smooth',block:'center'});
+      });
+    });
+  }
+  document.getElementById('cc-paper-save-btn') && document.getElementById('cc-paper-save-btn').addEventListener('click', async()=>{
+    const title=document.getElementById('cc-paper-title').value.trim(); if(!title) return;
+    const data={title, question:document.getElementById('cc-paper-question').value.trim(), background:document.getElementById('cc-paper-background').value.trim(), method:document.getElementById('cc-paper-method').value.trim(), status:document.getElementById('cc-paper-status').value};
+    if(editingPaperId){ const p=papers.find(x=>x.id===editingPaperId); if(p) Object.assign(p,data); editingPaperId=null; document.getElementById('cc-paper-save-btn').textContent='저장'; }
+    else papers.push({id:uid(),...data,created:Date.now()});
+    ['title','question','background','method'].forEach(f=>{const el=document.getElementById(`cc-paper-${f}`);if(el)el.value='';});
+    await savePapers(); renderPapers();
+  });
+
+  // ── SESSION RECORDS ────────────────────────────────────────────────────────
+  const sessTypeLabel = {individual:'개인상담',group:'집단상담',family:'가족상담',intake:'접수면접',assess:'심리평가'};
+  function renderSessions() {
+    const sum = document.getElementById('cc-session-summary');
+    const root = document.getElementById('cc-sess-list');
+    if (sum) {
+      const total=sessions.length, ind=sessions.filter(s=>s.type==='individual').length, intake=sessions.filter(s=>s.type==='intake').length, assess=sessions.filter(s=>s.type==='assess').length;
+      sum.innerHTML=`<div class="cc-sess-stat"><div class="cc-sess-stat-num">${total}</div><div class="cc-sess-stat-label">전체 기록</div></div>
+        <div class="cc-sess-stat"><div class="cc-sess-stat-num">${ind}</div><div class="cc-sess-stat-label">개인상담</div></div>
+        <div class="cc-sess-stat"><div class="cc-sess-stat-num">${intake}</div><div class="cc-sess-stat-label">접수면접</div></div>
+        <div class="cc-sess-stat"><div class="cc-sess-stat-num">${assess}</div><div class="cc-sess-stat-label">심리평가</div></div>`;
+    }
+    if (!root) return;
+    const sorted=[...sessions].sort((a,b)=>b.created-a.created);
+    root.innerHTML = sorted.length ? sorted.map((s,i)=>`
+      <div class="cc-sess-card">
+        <div class="cc-sess-head">
+          <span class="cc-sess-code">${escapeHtml(s.code||'?')} ${s.sessionNum?`#${s.sessionNum}`:''}회기</span>
+          <span class="cc-sess-type-badge">${sessTypeLabel[s.type]||s.type}</span>
+          <span class="cc-sess-meta">${s.date||''} ${s.topic?'· '+s.topic:''}</span>
+          <span class="cc-note-spacer"></span>
+          <button class="cc-del-btn" data-sessdel="${s.id}">삭제</button>
+        </div>
+        ${s.content?`<div class="cc-sess-section-label">내용</div><div class="cc-sess-section">${escapeHtml(s.content)}</div>`:''}
+        ${s.next?`<div class="cc-sess-section-label">다음 계획</div><div class="cc-sess-section">${escapeHtml(s.next)}</div>`:''}
+      </div>`).join('') : '<div class="cc-empty">아직 회기 기록이 없어요.</div>';
+    root.querySelectorAll('[data-sessdel]').forEach(el=>{ el.addEventListener('click',async()=>{ sessions=sessions.filter(s=>s.id!==el.getAttribute('data-sessdel')); await saveSessions(); renderSessions(); }); });
+  }
+  document.getElementById('cc-sess-save-btn') && document.getElementById('cc-sess-save-btn').addEventListener('click', async()=>{
+    const code=document.getElementById('cc-sess-code').value.trim(); if(!code) return;
+    sessions.push({id:uid(),code,date:document.getElementById('cc-sess-date').value,sessionNum:document.getElementById('cc-sess-num').value,type:document.getElementById('cc-sess-type').value,topic:document.getElementById('cc-sess-topic').value.trim(),content:document.getElementById('cc-sess-content').value.trim(),next:document.getElementById('cc-sess-next').value.trim(),created:Date.now()});
+    ['cc-sess-code','cc-sess-topic','cc-sess-content','cc-sess-next'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    await saveSessions(); renderSessions();
+  });
+
+  // ── SUPERVISION ────────────────────────────────────────────────────────────
+  function renderSupervisions() {
+    const root=document.getElementById('cc-sup-list'); if(!root) return;
+    const sorted=[...supervisions].sort((a,b)=>b.created-a.created);
+    root.innerHTML=sorted.length?sorted.map((s,i)=>`
+      <div class="cc-sup-card">
+        <div class="cc-sess-head">
+          <span class="cc-sess-code">수퍼비전 ${i+1}</span>
+          <span class="cc-sess-meta">${s.date||''} ${s.supervisor?'· '+s.supervisor:''}</span>
+          ${s.caseRef?`<span class="cc-sess-type-badge">${escapeHtml(s.caseRef)}</span>`:''}
+          <span class="cc-note-spacer"></span>
+          <button class="cc-del-btn" data-supdel="${s.id}">삭제</button>
+        </div>
+        ${s.feedback?`<div class="cc-sess-section-label">피드백</div><div class="cc-sess-section">${escapeHtml(s.feedback)}</div>`:''}
+        ${s.insight?`<div class="cc-sess-section-label">나의 통찰</div><div class="cc-sess-section">${escapeHtml(s.insight)}</div>`:''}
+        ${s.action?`<div class="cc-sess-section-label">실천 계획</div><div class="cc-sess-section">${escapeHtml(s.action)}</div>`:''}
+        <div style="font-size:11px;color:var(--ink-soft);text-align:right;margin-top:4px;">${formatDateTime(s.created)}</div>
+      </div>`).join(''):'<div class="cc-empty">아직 수퍼비전 기록이 없어요.</div>';
+    root.querySelectorAll('[data-supdel]').forEach(el=>{ el.addEventListener('click',async()=>{ supervisions=supervisions.filter(s=>s.id!==el.getAttribute('data-supdel')); await saveSupervisions(); renderSupervisions(); }); });
+  }
+  document.getElementById('cc-sup-save-btn') && document.getElementById('cc-sup-save-btn').addEventListener('click', async()=>{
+    const feedback=document.getElementById('cc-sup-feedback').value.trim(); if(!feedback) return;
+    supervisions.push({id:uid(),date:document.getElementById('cc-sup-date').value,supervisor:document.getElementById('cc-sup-name').value.trim(),caseRef:document.getElementById('cc-sup-case').value.trim(),feedback,insight:document.getElementById('cc-sup-insight').value.trim(),action:document.getElementById('cc-sup-action').value.trim(),created:Date.now()});
+    ['cc-sup-name','cc-sup-case','cc-sup-feedback','cc-sup-insight','cc-sup-action'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    await saveSupervisions(); renderSupervisions();
+  });
+
+  // ── CASE CONCEPTUALIZATION ─────────────────────────────────────────────────
+  const CON_FIELDS = {
+    psycho: ['방어기제','전이/역전이 가능성','초기 경험/핵심 상처','자아 기능'],
+    cbt:    ['자동적 사고','핵심 신념','인지 왜곡 유형','행동 패턴'],
+    person: ['자기개념 일치도','무조건적 수용 경험','현재 경험 태도','성장 방향'],
+    adler:  ['생활양식','사회적 관심 수준','가족 구도','초기 기억 주제'],
+    exist:  ['실존적 불안 주제','자유와 책임 태도','의미/가치','죽음 인식'],
+    family: ['가족 규칙','삼각관계','경계','의사소통 패턴'],
+  };
+  const conTheoryLabel = {psycho:'정신역동',cbt:'CBT',person:'인간중심',adler:'아들러',exist:'실존주의',family:'가족체계'};
+  function updateConFields() {
+    const theory=document.getElementById('cc-con-theory')&&document.getElementById('cc-con-theory').value;
+    const wrap=document.getElementById('cc-con-fields'); if(!wrap) return;
+    const fields=CON_FIELDS[theory]||[];
+    wrap.innerHTML=fields.map(f=>`<label class="cc-form-label">${escapeHtml(f)}</label><textarea data-confield="${escapeHtml(f)}" style="min-height:50px;width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;font-family:var(--body);box-sizing:border-box;outline:none;margin-bottom:8px;" placeholder="${escapeHtml(f)} 관련 내용…"></textarea>`).join('');
+  }
+  document.getElementById('cc-con-theory')&&document.getElementById('cc-con-theory').addEventListener('change',updateConFields);
+  setTimeout(updateConFields,100);
+  function renderConcepts() {
+    const root=document.getElementById('cc-con-list'); if(!root) return;
+    const sorted=[...concepts].sort((a,b)=>b.created-a.created);
+    root.innerHTML=sorted.length?sorted.map((c,i)=>`
+      <div class="cc-con-card">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span style="font-weight:700;font-size:15px;color:var(--ink);">${i+1}. ${escapeHtml(c.code)}</span>
+          <span class="cc-con-theory-badge">${conTheoryLabel[c.theory]||c.theory}</span>
+          <span class="cc-note-spacer"></span>
+          <button class="cc-del-btn" data-condel="${c.id}">삭제</button>
+        </div>
+        ${Object.entries(c.fields||{}).filter(([k,v])=>v).map(([k,v])=>`<div class="cc-con-field"><div class="cc-con-field-label">${escapeHtml(k)}</div><div class="cc-con-field-text">${escapeHtml(v)}</div></div>`).join('')}
+        ${c.goal?`<div class="cc-con-field"><div class="cc-con-field-label">개입 방향/목표</div><div class="cc-con-field-text">${escapeHtml(c.goal)}</div></div>`:''}
+        <div style="font-size:11px;color:var(--ink-soft);text-align:right;">${formatDateTime(c.created)}</div>
+      </div>`).join(''):'<div class="cc-empty">아직 사례개념화 기록이 없어요.</div>';
+    root.querySelectorAll('[data-condel]').forEach(el=>{ el.addEventListener('click',async()=>{ concepts=concepts.filter(c=>c.id!==el.getAttribute('data-condel')); await saveConcepts(); renderConcepts(); }); });
+  }
+  document.getElementById('cc-con-save-btn')&&document.getElementById('cc-con-save-btn').addEventListener('click',async()=>{
+    const code=document.getElementById('cc-con-code').value.trim(); if(!code) return;
+    const theory=document.getElementById('cc-con-theory').value;
+    const fields={};
+    document.querySelectorAll('[data-confield]').forEach(el=>{ if(el.value.trim()) fields[el.getAttribute('data-confield')]=el.value.trim(); });
+    const goal=document.getElementById('cc-con-goal').value.trim();
+    concepts.push({id:uid(),code,theory,fields,goal,created:Date.now()});
+    document.getElementById('cc-con-code').value=''; document.getElementById('cc-con-goal').value='';
+    document.querySelectorAll('[data-confield]').forEach(el=>el.value='');
+    await saveConcepts(); renderConcepts();
+  });
+
+  // ── SELF-CARE ──────────────────────────────────────────────────────────────
+  const stressLabels=['','매우 낮음','낮음','보통','높음','매우 높음'];
+  const moodEmoji=['','😞','😕','😐','🙂','😄'];
+  document.getElementById('cc-sc-sleep')&&document.getElementById('cc-sc-sleep').addEventListener('input',e=>{ document.getElementById('cc-sc-sleep-val').textContent=e.target.value+'시간'; });
+  document.getElementById('cc-sc-stress')&&document.getElementById('cc-sc-stress').addEventListener('input',e=>{ document.getElementById('cc-sc-stress-val').textContent=stressLabels[e.target.value]||e.target.value; });
+  document.querySelectorAll('#cc-sc-activity .cc-sc-chip').forEach(btn=>{ btn.addEventListener('click',()=>{ const v=btn.getAttribute('data-val'); btn.classList.toggle('on'); if(btn.classList.contains('on'))scSelectedActivity.push(v); else scSelectedActivity=scSelectedActivity.filter(x=>x!==v); }); });
+  document.querySelectorAll('#cc-sc-social .cc-sc-chip').forEach(btn=>{ btn.addEventListener('click',()=>{ const v=btn.getAttribute('data-val'); btn.classList.toggle('on'); if(btn.classList.contains('on'))scSelectedSocial.push(v); else scSelectedSocial=scSelectedSocial.filter(x=>x!==v); }); });
+  document.querySelectorAll('.cc-sc-mood-btn').forEach(btn=>{ btn.addEventListener('click',()=>{ scSelectedMood=Number(btn.getAttribute('data-mood')); document.querySelectorAll('.cc-sc-mood-btn').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); }); });
+  function renderSelfcareToday() {}
+  function renderSelfcareHistory() {
+    const root=document.getElementById('cc-sc-history'); if(!root) return;
+    const entries=Object.entries(selfcareLog).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,14);
+    root.innerHTML=entries.length?`<div class="cc-notes-meta-bar" style="margin-bottom:8px"><span>최근 기록</span></div>`+entries.map(([date,log])=>`
+      <div class="cc-sc-history-card">
+        <div class="cc-sc-history-date">${date}</div>
+        <div class="cc-sc-history-mood">${moodEmoji[log.mood]||'•'}</div>
+        <div class="cc-sc-history-detail">
+          😴 ${log.sleep||0}시간 &nbsp;|&nbsp; 🔥 ${stressLabels[log.stress]||log.stress} &nbsp;|&nbsp; ${log.note||''}
+        </div>
+        <button class="cc-del-btn" data-scdel="${date}">삭제</button>
+      </div>`).join(''):'<div class="cc-empty">아직 자기돌봄 기록이 없어요. 오늘 체크인을 해보세요!</div>';
+    root.querySelectorAll('[data-scdel]').forEach(el=>{ el.addEventListener('click',async()=>{ delete selfcareLog[el.getAttribute('data-scdel')]; await saveSelfcareLog(); renderSelfcareHistory(); }); });
+  }
+  document.getElementById('cc-sc-save-btn')&&document.getElementById('cc-sc-save-btn').addEventListener('click',async()=>{
+    const key=todayKey();
+    selfcareLog[key]={sleep:Number(document.getElementById('cc-sc-sleep').value)||7,mood:scSelectedMood,stress:Number(document.getElementById('cc-sc-stress').value)||2,activity:[...scSelectedActivity],social:[...scSelectedSocial],note:document.getElementById('cc-sc-note').value.trim()};
+    document.getElementById('cc-sc-note').value='';
+    await saveSelfcareLog(); renderSelfcareHistory(); showToast('오늘 자기돌봄 저장됨 ✓');
   });
 
   function escapeHtml(str) {
