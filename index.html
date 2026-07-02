@@ -1293,7 +1293,7 @@
       const q = await window.storage.get('qual-checks', false);
       qualChecks = q ? JSON.parse(q.value) : {};
     } catch(e) { qualChecks = {}; }
-    try { const to = await window.storage.get('tab-order', false); if (to) { const parsed = JSON.parse(to.value); if (Array.isArray(parsed) && parsed.every(k => TAB_DEFS[k])) tabOrder = parsed; } } catch(e) {}
+    try { const to = await window.storage.get('tab-order', false); if (to) { const parsed = JSON.parse(to.value); if (Array.isArray(parsed) && parsed.every(k => TAB_DEFS[k])) { const missing = Object.keys(TAB_DEFS).filter(k => !parsed.includes(k)); tabOrder = [...parsed, ...missing]; } } } catch(e) {}
     try { const d = await window.storage.get('ddays', false); ddays = d ? JSON.parse(d.value) : [{id:'dd1', label:'복학', date:'2026-08-24'}]; } catch(e) { ddays = [{id:'dd1', label:'복학', date:'2026-08-24'}]; }
     try { const g = await window.storage.get('goals', false); goals = g ? JSON.parse(g.value) : []; } catch(e) { goals = []; }
     try { const di = await window.storage.get('dict-entries', false); dictEntries = di ? JSON.parse(di.value) : []; } catch(e) { dictEntries = []; }
