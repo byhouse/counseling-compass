@@ -26,6 +26,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 <title>Counseling Compass</title>
+<meta name="theme-color" content="#2b3a55">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Compass">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<style>
+  html,body{margin:0;padding:0;background:#eef0f2;min-height:100vh;-webkit-tap-highlight-color:transparent;}
+  body{padding:12px;box-sizing:border-box;}
+</style>
+</head>
+<body>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>Counseling Compass</title>
 <meta name="description" content="상담자가 되어가는 평생 학습 시스템">
 <meta name="theme-color" content="#2b3a55">
 <meta name="mobile-web-app-capable" content="yes">
@@ -944,7 +966,6 @@
       <button id="cc-new-subject-btn">추가</button>
     </div>
   </div>
-  </div>
 
   <div id="cc-panel-daily" class="cc-hidden">
     <div class="cc-streak-banner">
@@ -1410,6 +1431,18 @@
 </div>
 
 <script>
+  (function(){
+    const cfg={apiKey:"AIzaSyCYaoJJr7ZXJ3-JRXEDUb-UcnArRE4gfzs",authDomain:"counseling-compass.firebaseapp.com",projectId:"counseling-compass",storageBucket:"counseling-compass.firebasestorage.app",messagingSenderId:"666059547277",appId:"1:666059547277:web:4b83eb09e7d5306f66f8c4"};
+    if(!firebase.apps.length)firebase.initializeApp(cfg);
+    const db=firebase.firestore(),D=db.collection("compass").doc("data");
+    window.storage={
+      async get(k){const s=await D.get();if(!s.exists||s.data()[k]===undefined)throw new Error("nf");return{key:k,value:s.data()[k]};},
+      async set(k,v){await D.set({[k]:v},{merge:true});return{key:k,value:v};},
+      async delete(k){await D.update({[k]:firebase.firestore.FieldValue.delete()});return{key:k};},
+      async list(p){const s=await D.get();const a=s.exists?Object.keys(s.data()):[];return{keys:p?a.filter(x=>x.startsWith(p)):a};}
+    };
+  })();
+
   (function(){
     const cfg={apiKey:"AIzaSyCYaoJJr7ZXJ3-JRXEDUb-UcnArRE4gfzs",authDomain:"counseling-compass.firebaseapp.com",projectId:"counseling-compass",storageBucket:"counseling-compass.firebasestorage.app",messagingSenderId:"666059547277",appId:"1:666059547277:web:4b83eb09e7d5306f66f8c4"};
     if(!firebase.apps.length)firebase.initializeApp(cfg);
@@ -4120,6 +4153,9 @@ function escapeHtml(str) {
   loadData();
 })();
 </script>
+
+</body>
+</html>
 
 </body>
 </html>
