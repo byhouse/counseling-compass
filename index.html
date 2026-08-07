@@ -898,6 +898,21 @@
   .cc-lib-url:hover { text-decoration:underline; }
   .cc-lib-note { font-size:13px; color:var(--ink-soft); margin-top:6px; line-height:1.6; }
   .cc-lib-foot { display:flex; align-items:center; justify-content:flex-end; gap:6px; padding:6px 14px 10px; }
+
+  /* Study Notes */
+  .cc-sn-card { background:var(--paper-raised); border-radius:12px; margin-bottom:12px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.07),0 0 0 1px var(--line); }
+  .cc-sn-head { padding:12px 16px 10px; background:#f9f8f7; border-bottom:1px solid var(--line); display:flex; align-items:flex-start; gap:8px; }
+  .cc-sn-title { font-family:var(--display); font-size:15px; font-weight:700; color:var(--ink); flex:1; }
+  .cc-sn-cat-badge { font-size:11.5px; font-weight:700; padding:3px 10px; border-radius:999px; background:var(--sage-soft); color:var(--sage); white-space:nowrap; flex:0 0 auto; }
+  .cc-sn-body { padding:14px 16px; font-size:13.5px; line-height:1.75; color:var(--ink); }
+  .cc-sn-body h1,.cc-sn-body h2,.cc-sn-body h3 { font-family:var(--display); color:var(--ink); margin:12px 0 4px; }
+  .cc-sn-body h1 { font-size:17px; } .cc-sn-body h2 { font-size:15px; } .cc-sn-body h3 { font-size:14px; }
+  .cc-sn-body strong { color:var(--ink); font-weight:700; }
+  .cc-sn-body em { font-style:italic; color:var(--ink-soft); }
+  .cc-sn-body ul { margin:4px 0 4px 18px; padding:0; }
+  .cc-sn-body li { margin-bottom:3px; }
+  .cc-sn-foot { display:flex; align-items:center; gap:6px; padding:6px 14px 10px; }
+  .cc-sn-datetime { font-size:11px; color:var(--ink-soft); flex:1; }
   .cc-stage-note-display { font-size:13px; color:var(--ink-soft); background:#f7f7f9; border-radius:6px; padding:6px 10px; margin-top:5px; line-height:1.5; white-space:pre-wrap; }
 </style>
 
@@ -916,6 +931,12 @@
   <div class="cc-title-block">
     <p class="cc-title">Counseling Compass</p>
     <p class="cc-sub">상담자가 되어가는 평생 학습 시스템</p>
+  </div>
+  <div style="position:absolute;top:16px;right:16px;display:flex;gap:6px;">
+    <button onclick="exportBackup()" style="border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.1);color:white;border-radius:8px;padding:5px 10px;font-size:11.5px;cursor:pointer;font-family:var(--body);">💾 백업</button>
+    <label style="border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.1);color:white;border-radius:8px;padding:5px 10px;font-size:11.5px;cursor:pointer;">
+      📂 복구<input type="file" id="cc-restore-input" accept=".json" style="display:none"/>
+    </label>
   </div>
 </div>
 <div id="cc-dday-bar" class="cc-dday-bar"></div>
@@ -1363,6 +1384,47 @@
   </div>
 
   <!-- 자료실 -->
+  <!-- 공부 노트 -->
+  <div id="cc-panel-studynote" class="cc-hidden">
+      <label class="cc-form-label">제목</label>
+      <input id="cc-sn-title" type="text" placeholder="예: 조작적 조건형성 (스키너)"/>
+      <label class="cc-form-label">분류</label>
+      <select id="cc-sn-cat">
+        <option value="theory">📖 상담이론</option>
+        <option value="develop">🌱 발달심리</option>
+        <option value="personality">🧠 성격심리</option>
+        <option value="abnormal">⚠️ 이상심리</option>
+        <option value="family">👨‍👩‍👧 가족상담</option>
+        <option value="group">👥 집단상담</option>
+        <option value="assess">📊 심리평가</option>
+        <option value="ethics">⚖️ 상담윤리</option>
+        <option value="research">🔬 연구방법</option>
+        <option value="other">📁 기타</option>
+      </select>
+      <label class="cc-form-label">내용 <span style="font-size:11px;color:var(--ink-soft)">(**굵게**, *기울임*, - 목록, # 제목)</span></label>
+      <textarea id="cc-sn-content" placeholder="공부 내용을 정리해보세요…&#10;&#10;**강화**: 행동 뒤에 자극을 조작하여 행동의 빈도를 증가시킴&#10;- 정적 강화(+): 행동 후 바람직한 자극 제시&#10;- 부적 강화(-): 행동 후 혐오자극 제거" style="min-height:200px;font-family:var(--body);"></textarea>
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <button class="cc-form-save-btn" id="cc-sn-save-btn">노트 저장</button>
+        <button class="cc-form-cancel-btn" id="cc-sn-cancel-btn" style="display:none">취소</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;" id="cc-sn-filter-row">
+      <button class="cc-tag-btn selected" data-snfilter="all">전체</button>
+      <button class="cc-tag-btn" data-snfilter="theory">📖 이론</button>
+      <button class="cc-tag-btn" data-snfilter="develop">🌱 발달</button>
+      <button class="cc-tag-btn" data-snfilter="personality">🧠 성격</button>
+      <button class="cc-tag-btn" data-snfilter="abnormal">⚠️ 이상</button>
+      <button class="cc-tag-btn" data-snfilter="family">👨‍👩‍👧 가족</button>
+      <button class="cc-tag-btn" data-snfilter="assess">📊 평가</button>
+      <button class="cc-tag-btn" data-snfilter="ethics">⚖️ 윤리</button>
+      <button class="cc-tag-btn" data-snfilter="other">📁 기타</button>
+    </div>
+    <div id="cc-sn-search-wrap" style="margin-bottom:12px;">
+      <input type="text" id="cc-sn-search" placeholder="🔍 노트 검색…" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14px;font-family:var(--body);box-sizing:border-box;outline:none;"/>
+    </div>
+    <div id="cc-sn-list"></div>
+  </div>
+
   <div id="cc-panel-library" class="cc-hidden">
     <div class="cc-dict-form">
       <label class="cc-form-label">자료 제목</label>
@@ -1601,7 +1663,7 @@
     selfcare:  '자기돌봄',
     qual:      '자격 체크',
   };
-  const DEFAULT_TAB_ORDER = ['daily','planner','notes','dict','reading','theory','flashcard','reflection','paper','session','supervision','concept','selfcare','qual','library'];
+  const DEFAULT_TAB_ORDER = ['daily','planner','notes','dict','reading','studynote','library','theory','flashcard','reflection','paper','session','supervision','concept','selfcare','qual'];
 
   let subjects = [];
   let notes = [];
@@ -1665,6 +1727,7 @@
     try { const cc = await window.storage.get('concepts', false); concepts = cc ? JSON.parse(cc.value) : []; } catch(e) { concepts = []; }
     try { const sc = await window.storage.get('selfcare-log', false); selfcareLog = sc ? JSON.parse(sc.value) : {}; } catch(e) { selfcareLog = {}; }
     try { const li = await window.storage.get('library-items', false); libraryItems = li ? JSON.parse(li.value) : []; } catch(e) { libraryItems = []; }
+    try { const sn = await window.storage.get('study-notes', false); studyNotes = sn ? JSON.parse(sn.value) : []; } catch(e) { studyNotes = []; }
     activeTab = tabOrder[0];
 
     // migrate: add grad course subjects once if not present
@@ -1711,6 +1774,7 @@
   async function saveSessions()     { try { await window.storage.set('sessions', JSON.stringify(sessions), false); showToast('저장됨'); } catch(e) {} }
   async function saveSupervisions() { try { await window.storage.set('supervisions', JSON.stringify(supervisions), false); showToast('저장됨'); } catch(e) {} }
   async function saveConcepts()     { try { await window.storage.set('concepts', JSON.stringify(concepts), false); showToast('저장됨'); } catch(e) {} }
+  async function saveStudyNotes() { try { await window.storage.set('study-notes', JSON.stringify(studyNotes), false); showToast('저장됨'); } catch(e) {} }
   async function saveLibraryItems() { try { await window.storage.set('library-items', JSON.stringify(libraryItems), false); showToast('저장됨'); } catch(e) {} }
   async function saveSelfcareLog()  { try { await window.storage.set('selfcare-log', JSON.stringify(selfcareLog), false); showToast('저장됨'); } catch(e) {} }
 
@@ -1764,6 +1828,7 @@
       if (el) el.classList.toggle('cc-hidden', key !== activeTab);
     });
     if (activeTab === 'library') renderLibrary();
+    if (activeTab === 'studynote') renderStudyNotes();
   }
 
   document.getElementById('cc-tabs-edit-btn').addEventListener('click', () => {
@@ -2665,6 +2730,7 @@
   let concepts = []; let editingConceptId = null;
   let selfcareLog = {}; let editingSelfcareKey = null;
   let libraryItems = []; let editingLibId = null; let selectedLibFilter = 'all';
+  let studyNotes = []; let editingSnId = null; let selectedSnFilter = 'all'; let snSearch = '';
   let scSelectedActivity = []; let scSelectedSocial = []; let scSelectedMood = 0;
 
   // Flashcard state
@@ -4061,6 +4127,165 @@
     });
   }
   (async()=>{ try{const c=await window.storage.get('case-answers',false);if(c)caseAnswers=JSON.parse(c.value);}catch(e){} })();
+
+
+  // ── STUDY NOTES ──────────────────────────────────────────────────────────
+  const snCatLabel = {theory:'📖 이론',develop:'🌱 발달',personality:'🧠 성격',abnormal:'⚠️ 이상',family:'👨‍👩‍👧 가족',group:'👥 집단',assess:'📊 평가',ethics:'⚖️ 윤리',research:'🔬 연구',other:'📁 기타'};
+
+  function renderMarkdown(text) {
+    if (!text) return '';
+    let html = escapeHtml(text);
+    // Headers
+    html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+    html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+    html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+    // Bold & italic
+    html = html.replace(/[*][*](.+?)[*][*]/g, '<strong>$1</strong>');
+    html = html.replace(/[*]([^*]+?)[*]/g, '<em>$1</em>');
+    // Lists
+    html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+    html = html.replace(/<li>/g, '<li>').replace(/(<li>[^<]*<\/li>)+/g, m => '<ul>' + m + '</ul>');
+    // Line breaks
+    html = html.replace(/\n/g, '<br>');
+    return html;
+  }
+
+  function renderStudyNotes() {
+    const root = document.getElementById('cc-sn-list');
+    if (!root) return;
+    let filtered = selectedSnFilter === 'all' ? studyNotes : studyNotes.filter(n => n.cat === selectedSnFilter);
+    if (snSearch) filtered = filtered.filter(n => n.title.includes(snSearch) || n.content.includes(snSearch));
+    const sorted = [...filtered].sort((a,b) => b.created - a.created);
+    if (!sorted.length) { root.innerHTML = '<div class="cc-empty">아직 공부 노트가 없어요. 첫 번째 노트를 작성해보세요!</div>'; return; }
+    root.innerHTML = `<div class="cc-notes-meta-bar"><span>총 ${sorted.length}개</span></div>` +
+      sorted.map((n, i) => `
+      <div class="cc-sn-card">
+        <div class="cc-sn-head">
+          <div style="flex:1">
+            <div class="cc-sn-title">${i+1}. ${escapeHtml(n.title)}</div>
+          </div>
+          <span class="cc-sn-cat-badge">${snCatLabel[n.cat]||n.cat}</span>
+        </div>
+        <div class="cc-sn-body">${renderMarkdown(n.content)}</div>
+        <div class="cc-sn-foot">
+          <span class="cc-sn-datetime">${n.created?formatDateTime(n.created):''}</span>
+          <button class="cc-del-btn" data-snedit="${n.id}" style="color:var(--sage);opacity:1">수정</button>
+          <button class="cc-del-btn" data-sndel="${n.id}">삭제</button>
+        </div>
+      </div>`).join('');
+
+    root.querySelectorAll('[data-snedit]').forEach(el => {
+      el.addEventListener('click', () => {
+        const n = studyNotes.find(x => x.id === el.getAttribute('data-snedit'));
+        if (!n) return;
+        editingSnId = n.id;
+        document.getElementById('cc-sn-title').value = n.title;
+        document.getElementById('cc-sn-cat').value = n.cat;
+        document.getElementById('cc-sn-content').value = n.content;
+        document.getElementById('cc-sn-save-btn').textContent = '수정 완료';
+        document.getElementById('cc-sn-cancel-btn').style.display = '';
+        document.getElementById('cc-sn-title').scrollIntoView({behavior:'smooth',block:'center'});
+        document.getElementById('cc-sn-title').focus();
+      });
+    });
+    root.querySelectorAll('[data-sndel]').forEach(el => {
+      el.addEventListener('click', async () => {
+        studyNotes = studyNotes.filter(n => n.id !== el.getAttribute('data-sndel'));
+        if (editingSnId === el.getAttribute('data-sndel')) { editingSnId=null; document.getElementById('cc-sn-save-btn').textContent='노트 저장'; document.getElementById('cc-sn-cancel-btn').style.display='none'; }
+        await saveStudyNotes(); renderStudyNotes();
+      });
+    });
+  }
+
+  document.getElementById('cc-sn-filter-row') && document.getElementById('cc-sn-filter-row').querySelectorAll('[data-snfilter]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedSnFilter = btn.getAttribute('data-snfilter');
+      document.getElementById('cc-sn-filter-row').querySelectorAll('[data-snfilter]').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected'); renderStudyNotes();
+    });
+  });
+  document.getElementById('cc-sn-search') && document.getElementById('cc-sn-search').addEventListener('input', e => { snSearch = e.target.value; renderStudyNotes(); });
+  document.getElementById('cc-sn-cancel-btn') && document.getElementById('cc-sn-cancel-btn').addEventListener('click', () => {
+    editingSnId = null;
+    ['cc-sn-title','cc-sn-content'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+    document.getElementById('cc-sn-save-btn').textContent = '노트 저장';
+    document.getElementById('cc-sn-cancel-btn').style.display = 'none';
+  });
+  document.getElementById('cc-sn-save-btn') && document.getElementById('cc-sn-save-btn').addEventListener('click', async () => {
+    const title = document.getElementById('cc-sn-title').value.trim();
+    const content = document.getElementById('cc-sn-content').value.trim();
+    if (!title || !content) return;
+    const data = { title, cat: document.getElementById('cc-sn-cat').value, content };
+    if (editingSnId) {
+      const n = studyNotes.find(x => x.id === editingSnId);
+      if (n) Object.assign(n, data);
+      editingSnId = null;
+      document.getElementById('cc-sn-save-btn').textContent = '노트 저장';
+      document.getElementById('cc-sn-cancel-btn').style.display = 'none';
+    } else {
+      studyNotes.push({ id: uid(), ...data, created: Date.now() });
+    }
+    ['cc-sn-title','cc-sn-content'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+    await saveStudyNotes(); renderStudyNotes();
+  });
+
+  // ── BACKUP & RESTORE ──────────────────────────────────────────────────────
+  async function exportBackup() {
+    try {
+      const snap = await window.storage.get ? null : null;
+      const data = {
+        version: 1, exportDate: new Date().toISOString(),
+        subjects, notes, dailyLogs, qualChecks, ddays, goals,
+        dictEntries, readingEntries, subjectTasks, theoryNotes,
+        reflections, papers, sessions, supervisions, concepts,
+        selfcareLog, libraryItems, studyNotes, devNotes, stageNotes, caseAnswers
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `counseling-compass-backup-${new Date().toLocaleDateString('ko-KR').replace(/\./g,'-').trim()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('백업 파일 다운로드 완료!');
+    } catch(e) { showToast('백업 실패: ' + e.message); }
+  }
+
+  async function importBackup(file) {
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      if (!data.version) throw new Error('올바른 백업 파일이 아니에요.');
+      if (data.subjects) { subjects = data.subjects; await saveSubjects(); }
+      if (data.notes) { notes = data.notes; await saveNotes(); }
+      if (data.dailyLogs) { dailyLogs = data.dailyLogs; await saveDailyLogs(); }
+      if (data.qualChecks) { qualChecks = data.qualChecks; await saveQualChecks(); }
+      if (data.ddays) { ddays = data.ddays; await saveDdays(); }
+      if (data.goals) { goals = data.goals; await saveGoals(); }
+      if (data.dictEntries) { dictEntries = data.dictEntries; await saveDictEntries(); }
+      if (data.readingEntries) { readingEntries = data.readingEntries; await saveReadingEntries(); }
+      if (data.theoryNotes) { theoryNotes = data.theoryNotes; await saveTheoryNotes(); }
+      if (data.reflections) { reflections = data.reflections; await saveReflections(); }
+      if (data.papers) { papers = data.papers; await savePapers(); }
+      if (data.sessions) { sessions = data.sessions; await saveSessions(); }
+      if (data.supervisions) { supervisions = data.supervisions; await saveSupervisions(); }
+      if (data.concepts) { concepts = data.concepts; await saveConcepts(); }
+      if (data.selfcareLog) { selfcareLog = data.selfcareLog; await saveSelfcareLog(); }
+      if (data.libraryItems) { libraryItems = data.libraryItems; await saveLibraryItems(); }
+      if (data.studyNotes) { studyNotes = data.studyNotes; await saveStudyNotes(); }
+      if (data.devNotes) { devNotes = data.devNotes; try { await window.storage.set('dev-notes', JSON.stringify(devNotes), false); } catch(e){} }
+      if (data.stageNotes) { stageNotes = data.stageNotes; try { await window.storage.set('stage-notes', JSON.stringify(stageNotes), false); } catch(e){} }
+      if (data.caseAnswers) { caseAnswers = data.caseAnswers; try { await window.storage.set('case-answers', JSON.stringify(caseAnswers), false); } catch(e){} }
+      showToast('복구 완료! 페이지를 새로고침해주세요.');
+      setTimeout(() => location.reload(), 1500);
+    } catch(e) { showToast('복구 실패: ' + e.message); }
+  }
+
+  // Backup buttons (in settings area of header)
+  document.getElementById('cc-backup-btn') && document.getElementById('cc-backup-btn').addEventListener('click', exportBackup);
+  document.getElementById('cc-restore-input') && document.getElementById('cc-restore-input').addEventListener('change', e => {
+    if (e.target.files[0]) importBackup(e.target.files[0]);
+  });
 
   // ── LIBRARY ───────────────────────────────────────────────────────────────
   const libCatLabel = {theory:'📖 이론',develop:'🌱 발달',family:'👨‍👩‍👧 가족',assess:'📊 평가',ethics:'⚖️ 윤리',research:'🔬 연구',paper:'📝 논문',video:'🎥 영상',other:'📁 기타'};
