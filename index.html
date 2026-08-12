@@ -48,6 +48,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 <title>Counseling Compass</title>
+<meta name="theme-color" content="#2b3a55">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Compass">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<style>
+  html,body{margin:0;padding:0;background:#eef0f2;min-height:100vh;-webkit-tap-highlight-color:transparent;}
+  body{padding:12px;box-sizing:border-box;}
+</style>
+</head>
+<body>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>Counseling Compass</title>
 <meta name="description" content="상담자가 되어가는 평생 학습 시스템">
 <meta name="theme-color" content="#2b3a55">
 <meta name="mobile-web-app-capable" content="yes">
@@ -933,8 +955,8 @@
     <p class="cc-sub">상담자가 되어가는 평생 학습 시스템</p>
   </div>
   <div style="position:absolute;top:16px;right:16px;display:flex;gap:6px;">
-    <button onclick="exportBackup()" style="border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.1);color:white;border-radius:8px;padding:5px 10px;font-size:11.5px;cursor:pointer;font-family:var(--body);">💾 백업</button>
-    <label style="border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.1);color:white;border-radius:8px;padding:5px 10px;font-size:11.5px;cursor:pointer;">
+    <button onclick="exportBackup()" style="border:none;background:#c8e6c9;color:#1b5e20;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:var(--body);font-weight:700;">💾 백업</button>
+    <label style="border:none;background:#bbdefb;color:#0d47a1;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;font-weight:700;">
       📂 복구<input type="file" id="cc-restore-input" accept=".json" style="display:none"/>
     </label>
   </div>
@@ -944,6 +966,7 @@
 <div class="cc-tabs-wrap">
   <div class="cc-tabs" id="cc-tabs-row"></div>
   <button class="cc-tabs-edit-btn" id="cc-tabs-edit-btn" title="탭 순서 편집">⇅ 순서편집</button>
+  <button class="cc-tabs-edit-btn" id="cc-tabs-reset-btn" style="background:var(--rose-soft);color:var(--rose);border-color:var(--rose-soft);" title="탭 순서 초기화">↺ 탭초기화</button>
 </div>
 
 <div class="cc-panel">
@@ -1521,6 +1544,18 @@
   (function(){
     const cfg={apiKey:"AIzaSyCYaoJJr7ZXJ3-JRXEDUb-UcnArRE4gfzs",authDomain:"counseling-compass.firebaseapp.com",projectId:"counseling-compass",storageBucket:"counseling-compass.firebasestorage.app",messagingSenderId:"666059547277",appId:"1:666059547277:web:4b83eb09e7d5306f66f8c4"};
     if(!firebase.apps.length)firebase.initializeApp(cfg);
+    const db=firebase.firestore(),D=db.collection("compass").doc("data");
+    window.storage={
+      async get(k){const s=await D.get();if(!s.exists||s.data()[k]===undefined)throw new Error("nf");return{key:k,value:s.data()[k]};},
+      async set(k,v){await D.set({[k]:v},{merge:true});return{key:k,value:v};},
+      async delete(k){await D.update({[k]:firebase.firestore.FieldValue.delete()});return{key:k};},
+      async list(p){const s=await D.get();const a=s.exists?Object.keys(s.data()):[];return{keys:p?a.filter(x=>x.startsWith(p)):a};}
+    };
+  })();
+
+  (function(){
+    const cfg={apiKey:"AIzaSyCYaoJJr7ZXJ3-JRXEDUb-UcnArRE4gfzs",authDomain:"counseling-compass.firebaseapp.com",projectId:"counseling-compass",storageBucket:"counseling-compass.firebasestorage.app",messagingSenderId:"666059547277",appId:"1:666059547277:web:4b83eb09e7d5306f66f8c4"};
+    if(!firebase.apps.length)firebase.initializeApp(cfg);
     const db=firebase.firestore(),D=db.collection('compass').doc('data');
     window.storage={
       async get(k){const s=await D.get();if(!s.exists||s.data()[k]===undefined)throw new Error('nf');return{key:k,value:s.data()[k]};},
@@ -1832,6 +1867,12 @@
     if (activeTab === 'studynote') renderStudyNotes();
   }
 
+  document.getElementById('cc-tabs-reset-btn') && document.getElementById('cc-tabs-reset-btn').addEventListener('click', async () => {
+    tabOrder = [...Object.keys(TAB_DEFS)];
+    await saveTabOrder();
+    renderTabs();
+    showToast('탭 순서가 초기화됐어요!');
+  });
   document.getElementById('cc-tabs-edit-btn').addEventListener('click', () => {
     tabEditMode = !tabEditMode;
     document.getElementById('cc-tabs-edit-btn').classList.toggle('active', tabEditMode);
@@ -4379,6 +4420,9 @@ function escapeHtml(str) {
   loadData();
 })();
 </script>
+
+</body>
+</html>
 
 </body>
 </html>
