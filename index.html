@@ -4275,8 +4275,10 @@
 
   // ── BACKUP & RESTORE ──────────────────────────────────────────────────────
   async function exportBackup() {
+    const btn = document.querySelector('[onclick="exportBackup()"]');
+    const origText = btn ? btn.innerHTML : '';
     try {
-      const snap = await window.storage.get ? null : null;
+      if (btn) btn.innerHTML = '⏳ 백업 중…';
       const data = {
         version: 1, exportDate: new Date().toISOString(),
         subjects, notes, dailyLogs, qualChecks, ddays, goals,
@@ -4288,14 +4290,21 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `counseling-compass-backup-${new Date().toLocaleDateString('ko-KR').replace(/\./g,'-').trim()}.json`;
+      const dateStr = new Date().toLocaleDateString('ko-KR').replace(/[. ]/g,'-').replace(/-$/,'');
+      a.download = 'counseling-compass-backup-' + dateStr + '.json';
       a.click();
       URL.revokeObjectURL(url);
-      showToast('백업 파일 다운로드 완료!');
-    } catch(e) { showToast('백업 실패: ' + e.message); }
+      if (btn) { btn.innerHTML = '✅ 백업완료!'; setTimeout(()=>{ btn.innerHTML=origText; },2500); }
+      showToast('✅ 백업 파일이 다운로드됐어요! 안전한 곳에 보관해주세요.');
+    } catch(e) {
+      if (btn) btn.innerHTML = origText;
+      showToast('❌ 백업 실패: ' + e.message);
+    }
   }
 
   async function importBackup(file) {
+    if (!confirm('⚠️ 복구하면 현재 모든 데이터가 백업 파일의 내용으로 교체돼요. 계속할까요?')) return;
+    showToast('📂 복구 중… 잠시 기다려주세요.');
     try {
       const text = await file.text();
       const data = JSON.parse(text);
@@ -4325,10 +4334,16 @@
     } catch(e) { showToast('복구 실패: ' + e.message); }
   }
 
-  // Backup buttons (in settings area of header)
-  document.getElementById('cc-backup-btn') && document.getElementById('cc-backup-btn').addEventListener('click', exportBackup);
-  document.getElementById('cc-restore-input') && document.getElementById('cc-restore-input').addEventListener('change', e => {
-    if (e.target.files[0]) importBackup(e.target.files[0]);
+  // Expose backup functions globally
+  window.exportBackup = exportBackup;
+  document.getElementById('cc-restore-input') && document.getElementById('cc-restore-input').addEventListener('change', async e => {
+    if (e.target.files[0]) {
+      const btn = e.target.closest('label');
+      if (btn) btn.style.background = '#fff3cd';
+      await importBackup(e.target.files[0]);
+      if (btn) btn.style.background = '';
+      e.target.value = '';
+    }
   });
 
   // ── LIBRARY ───────────────────────────────────────────────────────────────
