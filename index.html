@@ -1763,7 +1763,19 @@
     try { const ss = await window.storage.get('sessions', false); sessions = ss ? JSON.parse(ss.value) : []; } catch(e) { sessions = []; }
     try { const sv = await window.storage.get('supervisions', false); supervisions = sv ? JSON.parse(sv.value) : []; } catch(e) { supervisions = []; }
     try { const cc = await window.storage.get('concepts', false); concepts = cc ? JSON.parse(cc.value) : []; } catch(e) { concepts = []; }
-    try { const sc = await window.storage.get('selfcare-log', false); selfcareLog = sc ? JSON.parse(sc.value) : {}; } catch(e) { selfcareLog = {}; }
+    try {
+      const sc = await window.storage.get('selfcare-log', false);
+      if (sc) {
+        const parsed = JSON.parse(sc.value);
+        // migrate: if old format (object), convert to array
+        if (!Array.isArray(parsed)) {
+          selfcareLog = Object.entries(parsed).map(([date, log]) => ({
+            id: uid(), date, ...log, created: new Date(date).getTime()
+          }));
+          await window.storage.set('selfcare-log', JSON.stringify(selfcareLog), false);
+        } else { selfcareLog = parsed; }
+      } else { selfcareLog = []; }
+    } catch(e) { selfcareLog = []; }
     try { const li = await window.storage.get('library-items', false); libraryItems = li ? JSON.parse(li.value) : []; } catch(e) { libraryItems = []; }
     try { const sn = await window.storage.get('study-notes', false); studyNotes = sn ? JSON.parse(sn.value) : []; } catch(e) { studyNotes = []; }
     activeTab = tabOrder[0];
@@ -2772,7 +2784,7 @@
   let sessions = []; let editingSessionId = null;
   let supervisions = []; let editingSupervisedId = null;
   let concepts = []; let editingConceptId = null;
-  let selfcareLog = {}; let editingSelfcareKey = null;
+  let selfcareLog = []; let editingSelfcareKey = null;
   let libraryItems = []; let editingLibId = null; let selectedLibFilter = 'all';
   let studyNotes = []; let editingSnId = null; let selectedSnFilter = 'all'; let snSearch = '';
   let scSelectedActivity = []; let scSelectedSocial = []; let scSelectedMood = 0;
@@ -2786,7 +2798,7 @@
     const filtered = dictSearch
       ? dictEntries.filter(e => e.term.toLowerCase().includes(dictSearch.toLowerCase()) || e.definition.toLowerCase().includes(dictSearch.toLowerCase()))
       : [...dictEntries];
-    filtered.sort((a,b) => a.term.localeCompare(b.term, 'ko'));
+    filtered.sort((a,b) => b.created - a.created);
 
     if (!filtered.length) {
       root.innerHTML = `<div class="cc-empty">${dictSearch ? '검색 결과가 없어요.' : '아직 등록된 용어가 없어요. 첫 번째 용어를 추가해보세요!'}</div>`;
@@ -3812,25 +3824,25 @@
   function renderSelfcareToday() {}
   function renderSelfcareHistory() {
     const root=document.getElementById('cc-sc-history'); if(!root) return;
-    const entries=Object.entries(selfcareLog).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,30);
-    root.innerHTML=entries.length?`<div class="cc-notes-meta-bar" style="margin-bottom:8px"><span>최근 기록</span></div>`+entries.map(([date,log],i)=>`
+    const entries=[...selfcareLog].sort((a,b)=>b.created-a.created).slice(0,30);
+    root.innerHTML=entries.length?`<div class="cc-notes-meta-bar" style="margin-bottom:8px"><span>총 ${selfcareLog.length}개</span></div>`+entries.map((log,i)=>`
       <div class="cc-sc-history-card">
-        <div class="cc-sc-history-date">${date}</div>
+        <div class="cc-sc-history-date">${log.date||''}<br><span style="font-size:10px">${log.created?new Date(log.created).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}):''}</span></div>
         <div class="cc-sc-history-mood">${moodEmoji[log.mood]||'•'}</div>
         <div class="cc-sc-history-detail">
           😴 ${log.sleep||0}h &nbsp;|&nbsp; 🔥 ${stressLabels[log.stress]||log.stress}
           ${log.note?`<br>${escapeHtml(log.note)}`:''}
         </div>
         <div style="display:flex;flex-direction:column;gap:4px;">
-          <button class="cc-del-btn" data-scedit="${date}" style="color:var(--sage);opacity:1">수정</button>
-          <button class="cc-del-btn" data-scdel="${date}">삭제</button>
+          <button class="cc-del-btn" data-scedit="${log.id}" style="color:var(--sage);opacity:1">수정</button>
+          <button class="cc-del-btn" data-scdel="${log.id}">삭제</button>
         </div>
       </div>`).join(''):'<div class="cc-empty">아직 자기돌봄 기록이 없어요. 오늘 체크인을 해보세요!</div>';
     root.querySelectorAll('[data-scedit]').forEach(el=>{
       el.addEventListener('click',()=>{
-        const date=el.getAttribute('data-scedit');
-        const log=selfcareLog[date]; if(!log) return;
-        editingSelfcareKey=date;
+        const id=el.getAttribute('data-scedit');
+        const log=selfcareLog.find(x=>x.id===id); if(!log) return;
+        editingSelfcareKey=id;
         document.getElementById('cc-sc-sleep').value=log.sleep||7;
         document.getElementById('cc-sc-sleep-val').textContent=(log.sleep||7)+'시간';
         document.getElementById('cc-sc-stress').value=log.stress||2;
@@ -3847,7 +3859,7 @@
         document.getElementById('cc-sc-save-btn').scrollIntoView({behavior:'smooth',block:'center'});
       });
     });
-    root.querySelectorAll('[data-scdel]').forEach(el=>{ el.addEventListener('click',async()=>{ delete selfcareLog[el.getAttribute('data-scdel')]; await saveSelfcareLog(); renderSelfcareHistory(); }); });
+    root.querySelectorAll('[data-scdel]').forEach(el=>{ el.addEventListener('click',async()=>{ selfcareLog=selfcareLog.filter(x=>x.id!==el.getAttribute('data-scdel')); if(editingSelfcareKey===el.getAttribute('data-scdel')){editingSelfcareKey=null;document.getElementById('cc-sc-save-btn').textContent='오늘 기록 저장';document.getElementById('cc-sc-cancel-btn').style.display='none';} await saveSelfcareLog(); renderSelfcareHistory(); }); });
   }
   document.getElementById('cc-sc-cancel-btn')&&document.getElementById('cc-sc-cancel-btn').addEventListener('click',()=>{
     editingSelfcareKey=null;
@@ -3856,8 +3868,13 @@
     document.getElementById('cc-sc-note').value='';
   });
   document.getElementById('cc-sc-save-btn')&&document.getElementById('cc-sc-save-btn').addEventListener('click',async()=>{
-    const key=editingSelfcareKey||todayKey();
-    selfcareLog[key]={sleep:Number(document.getElementById('cc-sc-sleep').value)||7,mood:scSelectedMood,stress:Number(document.getElementById('cc-sc-stress').value)||2,activity:[...scSelectedActivity],social:[...scSelectedSocial],note:document.getElementById('cc-sc-note').value.trim()};
+    const scData={sleep:Number(document.getElementById('cc-sc-sleep').value)||7,mood:scSelectedMood,stress:Number(document.getElementById('cc-sc-stress').value)||2,activity:[...scSelectedActivity],social:[...scSelectedSocial],note:document.getElementById('cc-sc-note').value.trim(),date:todayKey()};
+    if(editingSelfcareKey){
+      const idx=selfcareLog.findIndex(x=>x.id===editingSelfcareKey);
+      if(idx>=0) Object.assign(selfcareLog[idx], scData);
+    } else {
+      selfcareLog.push({id:uid(),...scData,created:Date.now()});
+    }
     document.getElementById('cc-sc-note').value='';
     document.getElementById('cc-sc-save-btn').textContent='오늘 기록 저장';
     document.getElementById('cc-sc-cancel-btn').style.display='none';
