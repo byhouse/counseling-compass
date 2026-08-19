@@ -936,6 +936,36 @@
   .cc-sn-foot { display:flex; align-items:center; gap:6px; padding:6px 14px 10px; }
   .cc-sn-datetime { font-size:11px; color:var(--ink-soft); flex:1; }
   .cc-stage-note-display { font-size:13px; color:var(--ink-soft); background:#f7f7f9; border-radius:6px; padding:6px 10px; margin-top:5px; line-height:1.5; white-space:pre-wrap; }
+
+  /* Thought Record */
+  .cc-thought-step { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+  .cc-thought-step-num { width:22px; height:22px; border-radius:50%; background:linear-gradient(135deg,#667eea,#764ba2); color:white; font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .cc-thought-emotions { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:4px; }
+  .cc-thought-emotion-btn { border:1.5px solid var(--line); background:var(--paper); border-radius:999px; padding:5px 12px; font-size:12.5px; cursor:pointer; font-family:var(--body); color:var(--ink-soft); transition:all .15s; }
+  .cc-thought-emotion-btn.on { background:#764ba2; color:white; border-color:#764ba2; }
+  .cc-distortion-check { display:flex; align-items:flex-start; gap:8px; padding:6px 0; border-bottom:1px solid #f0f0f3; font-size:13px; cursor:pointer; }
+  .cc-distortion-check:last-child { border-bottom:none; }
+  .cc-distortion-check input { margin-top:2px; accent-color:#764ba2; width:16px; height:16px; flex-shrink:0; }
+  .cc-thought-card { background:var(--paper-raised); border-radius:12px; margin-bottom:12px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.07),0 0 0 1px var(--line); }
+  .cc-thought-card-head { padding:12px 16px 10px; background:linear-gradient(135deg,#667eea20,#764ba220); border-bottom:1px solid var(--line); }
+  .cc-thought-card-date { font-size:12px; color:var(--ink-soft); margin-bottom:4px; }
+  .cc-thought-card-emotions { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:6px; }
+  .cc-thought-emotion-tag { font-size:12px; font-weight:700; padding:2px 10px; border-radius:999px; background:#764ba220; color:#764ba2; }
+  .cc-thought-intensity { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--ink-soft); }
+  .cc-thought-bar { flex:1; height:6px; background:var(--line); border-radius:3px; overflow:hidden; }
+  .cc-thought-bar-fill { height:100%; border-radius:3px; }
+  .cc-thought-section { padding:10px 16px; border-bottom:1px solid #f5f5f7; }
+  .cc-thought-section:last-child { border-bottom:none; }
+  .cc-thought-section-label { font-size:11px; font-weight:700; color:#764ba2; text-transform:uppercase; letter-spacing:.05em; margin-bottom:4px; }
+  .cc-thought-section-text { font-size:13.5px; line-height:1.7; color:var(--ink); white-space:pre-wrap; }
+  .cc-thought-distortion-tags { display:flex; flex-wrap:wrap; gap:4px; }
+  .cc-thought-distortion-tag { font-size:11.5px; padding:2px 8px; border-radius:999px; background:#f0eef7; color:#764ba2; font-weight:600; }
+  .cc-thought-stats-wrap { background:var(--paper-raised); border-radius:12px; padding:14px 16px; margin-bottom:14px; border:1px solid var(--line); }
+  .cc-thought-stats-title { font-size:13px; font-weight:700; margin-bottom:10px; color:var(--ink); }
+  .cc-thought-stat-row { display:flex; align-items:center; gap:8px; margin-bottom:6px; font-size:12.5px; }
+  .cc-thought-stat-label { min-width:100px; color:var(--ink-soft); }
+  .cc-thought-stat-bar { flex:1; height:8px; background:var(--line); border-radius:4px; overflow:hidden; }
+  .cc-thought-stat-fill { height:100%; background:linear-gradient(90deg,#667eea,#764ba2); border-radius:4px; }
 </style>
 
 <div class="cc-header">
@@ -1489,6 +1519,70 @@
     <div id="cc-lib-list"></div>
   </div>
 
+  <!-- 사고기록지 (CBT) -->
+  <div id="cc-panel-thought" class="cc-hidden">
+    <div style="background:linear-gradient(135deg,#667eea,#764ba2);border-radius:12px;padding:14px 16px;margin-bottom:16px;color:white;">
+      <div style="font-size:15px;font-weight:700;margin-bottom:4px;">📝 자동사고 기록지</div>
+      <div style="font-size:12.5px;opacity:.85;">불편한 감정이 들 때 생각을 기록하고 더 균형 잡힌 시각을 찾아봐요</div>
+    </div>
+    <div class="cc-dict-form" id="cc-thought-form">
+      <div class="cc-thought-step"><span class="cc-thought-step-num">1</span><label class="cc-form-label">상황 — 언제, 어디서, 무슨 일이 있었나요?</label></div>
+      <textarea id="cc-th-situation" placeholder="예: 오늘 수업에서 발표를 잘 못한 것 같았다. 교수님이 무표정으로 봤다." style="min-height:70px"></textarea>
+
+      <div class="cc-thought-step" style="margin-top:8px"><span class="cc-thought-step-num">2</span><label class="cc-form-label">감정 — 어떤 감정인가요? (복수 선택 가능)</label></div>
+      <div class="cc-thought-emotions" id="cc-th-emotions">
+        <button class="cc-thought-emotion-btn" data-emotion="불안">😰 불안</button>
+        <button class="cc-thought-emotion-btn" data-emotion="슬픔">😢 슬픔</button>
+        <button class="cc-thought-emotion-btn" data-emotion="분노">😠 분노</button>
+        <button class="cc-thought-emotion-btn" data-emotion="수치심">😳 수치심</button>
+        <button class="cc-thought-emotion-btn" data-emotion="죄책감">😔 죄책감</button>
+        <button class="cc-thought-emotion-btn" data-emotion="무기력">😞 무기력</button>
+        <button class="cc-thought-emotion-btn" data-emotion="두려움">😨 두려움</button>
+        <button class="cc-thought-emotion-btn" data-emotion="외로움">🥺 외로움</button>
+      </div>
+      <div style="margin-top:8px;display:flex;align-items:center;gap:10px;">
+        <label style="font-size:12.5px;color:var(--ink-soft);white-space:nowrap;">감정 강도</label>
+        <input type="range" id="cc-th-emotion-before" min="0" max="100" value="50" style="flex:1;accent-color:#764ba2"/>
+        <span id="cc-th-emotion-before-val" style="font-size:13px;font-weight:700;color:#764ba2;min-width:36px;">50%</span>
+      </div>
+
+      <div class="cc-thought-step" style="margin-top:8px"><span class="cc-thought-step-num">3</span><label class="cc-form-label">자동적 사고 — 그 순간 머릿속에 든 생각은?</label></div>
+      <textarea id="cc-th-thought" placeholder="예: '나는 정말 못하는구나. 교수님이 나를 형편없다고 생각할 것이다.'" style="min-height:80px"></textarea>
+
+      <div class="cc-thought-step" style="margin-top:8px"><span class="cc-thought-step-num">4</span><label class="cc-form-label">인지왜곡 — 해당하는 것을 모두 체크해보세요</label></div>
+      <div id="cc-th-distortions">
+        <label class="cc-distortion-check"><input type="checkbox" value="전부아니면전무"/> <span>⚫ 전부 아니면 전무 — "완벽하지 않으면 실패야"</span></label>
+        <label class="cc-distortion-check"><input type="checkbox" value="과잉일반화"/> <span>🔁 과잉일반화 — "항상, 절대, 언제나"</span></label>
+        <label class="cc-distortion-check"><input type="checkbox" value="정신적여과"/> <span>🔍 정신적 여과 — 부정적인 것만 봄</span></label>
+        <label class="cc-distortion-check"><input type="checkbox" value="긍정격하"/> <span>❌ 긍정 격하 — 좋은 것은 무시</span></label>
+        <label class="cc-distortion-check"><input type="checkbox" value="마음읽기"/> <span>🧠 마음읽기 — 상대방 생각을 단정</span></label>
+        <label class="cc-distortion-check"><input type="checkbox" value="점쟁이오류"/> <span>🔮 점쟁이 오류 — 최악의 결과 예측</span></label>
+        <label class="cc-distortion-check"><input type="checkbox" value="과장축소"/> <span>📐 과장·축소 — 나쁜 건 크게, 좋은 건 작게</span></label>
+        <label class="cc-distortion-check"><input type="checkbox" value="감정적추론"/> <span>💭 감정적 추론 — "느끼니까 사실이야"</span></label>
+        <label class="cc-distortion-check"><input type="checkbox" value="당위적사고"/> <span>⚠️ 당위적 사고 — "~해야 한다, ~해선 안 된다"</span></label>
+        <label class="cc-distortion-check"><input type="checkbox" value="낙인찍기"/> <span>🏷️ 낙인찍기 — "나는 패배자야"</span></label>
+        <label class="cc-distortion-check"><input type="checkbox" value="개인화"/> <span>👆 개인화 — 모든 것이 내 탓</span></label>
+      </div>
+
+      <div class="cc-thought-step" style="margin-top:8px"><span class="cc-thought-step-num">5</span><label class="cc-form-label">합리적 반응 — 더 균형 잡힌 생각은?</label></div>
+      <textarea id="cc-th-rational" placeholder="예: '발표가 완벽하지 않을 수도 있다. 교수님의 표정으로 내 평가를 단정할 수 없다. 나는 최선을 다했다.'" style="min-height:80px"></textarea>
+
+      <div class="cc-thought-step" style="margin-top:8px"><span class="cc-thought-step-num">6</span><label class="cc-form-label">변화된 감정 강도 — 지금은 어느 정도인가요?</label></div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <input type="range" id="cc-th-emotion-after" min="0" max="100" value="30" style="flex:1;accent-color:#5a9b6f"/>
+        <span id="cc-th-emotion-after-val" style="font-size:13px;font-weight:700;color:#5a9b6f;min-width:36px;">30%</span>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button class="cc-form-save-btn" id="cc-th-save-btn" style="background:linear-gradient(135deg,#667eea,#764ba2)">기록 저장</button>
+        <button class="cc-form-cancel-btn" id="cc-th-cancel-btn" style="display:none">취소</button>
+      </div>
+    </div>
+
+    <div id="cc-thought-stats" style="margin-bottom:12px;"></div>
+    <div id="cc-thought-list"></div>
+  </div>
+
   <div id="cc-panel-notes" class="cc-hidden">
     <div class="cc-note-form">
       <div class="cc-tag-row" id="cc-tag-row">
@@ -1700,8 +1794,9 @@
     concept:   '사례개념화',
     selfcare:  '자기돌봄',
     qual:      '자격 체크',
+    thought:   '사고기록지',
   };
-  const DEFAULT_TAB_ORDER = ['daily','planner','notes','dict','reading','studynote','library','theory','flashcard','reflection','paper','session','supervision','concept','selfcare','qual'];
+  const DEFAULT_TAB_ORDER = ['daily','planner','notes','dict','reading','studynote','library','theory','flashcard','reflection','paper','session','supervision','concept','selfcare','qual','thought'];
 
   let subjects = [];
   let notes = [];
@@ -1778,6 +1873,7 @@
     } catch(e) { selfcareLog = []; }
     try { const li = await window.storage.get('library-items', false); libraryItems = li ? JSON.parse(li.value) : []; } catch(e) { libraryItems = []; }
     try { const sn = await window.storage.get('study-notes', false); studyNotes = sn ? JSON.parse(sn.value) : []; } catch(e) { studyNotes = []; }
+    try { const th = await window.storage.get('thought-records', false); thoughtRecords = th ? JSON.parse(th.value) : []; } catch(e) { thoughtRecords = []; }
     activeTab = tabOrder[0];
 
     // migrate: add grad course subjects once if not present
@@ -1824,6 +1920,7 @@
   async function saveSessions()     { try { await window.storage.set('sessions', JSON.stringify(sessions), false); showToast('저장됨'); } catch(e) {} }
   async function saveSupervisions() { try { await window.storage.set('supervisions', JSON.stringify(supervisions), false); showToast('저장됨'); } catch(e) {} }
   async function saveConcepts()     { try { await window.storage.set('concepts', JSON.stringify(concepts), false); showToast('저장됨'); } catch(e) {} }
+  async function saveThoughtRecords() { try { await window.storage.set('thought-records', JSON.stringify(thoughtRecords), false); showToast('저장됨'); } catch(e) {} }
   async function saveStudyNotes() { try { await window.storage.set('study-notes', JSON.stringify(studyNotes), false); showToast('저장됨'); } catch(e) {} }
   async function saveLibraryItems() { try { await window.storage.set('library-items', JSON.stringify(libraryItems), false); showToast('저장됨'); } catch(e) {} }
   async function saveSelfcareLog()  { try { await window.storage.set('selfcare-log', JSON.stringify(selfcareLog), false); showToast('저장됨'); } catch(e) {} }
@@ -1879,6 +1976,7 @@
     });
     if (activeTab === 'library') renderLibrary();
     if (activeTab === 'studynote') renderStudyNotes();
+    if (activeTab === 'thought') { renderThoughtStats(); renderThoughtList(); }
   }
 
   document.getElementById('cc-tabs-reset-btn') && document.getElementById('cc-tabs-reset-btn').addEventListener('click', async () => {
@@ -2787,6 +2885,7 @@
   let selfcareLog = []; let editingSelfcareKey = null;
   let libraryItems = []; let editingLibId = null; let selectedLibFilter = 'all';
   let studyNotes = []; let editingSnId = null; let selectedSnFilter = 'all'; let snSearch = '';
+  let thoughtRecords = []; let editingThoughtId = null; let selectedThoughtEmotions = [];
   let scSelectedActivity = []; let scSelectedSocial = []; let scSelectedMood = 0;
 
   // Flashcard state
@@ -4301,7 +4400,7 @@
         subjects, notes, dailyLogs, qualChecks, ddays, goals,
         dictEntries, readingEntries, subjectTasks, theoryNotes,
         reflections, papers, sessions, supervisions, concepts,
-        selfcareLog, libraryItems, studyNotes, devNotes, stageNotes, caseAnswers
+        selfcareLog, libraryItems, studyNotes, thoughtRecords, devNotes, stageNotes, caseAnswers
       };
       const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
       const url = URL.createObjectURL(blob);
@@ -4343,6 +4442,7 @@
       if (data.selfcareLog) { selfcareLog = data.selfcareLog; await saveSelfcareLog(); }
       if (data.libraryItems) { libraryItems = data.libraryItems; await saveLibraryItems(); }
       if (data.studyNotes) { studyNotes = data.studyNotes; await saveStudyNotes(); }
+      if (data.thoughtRecords) { thoughtRecords = data.thoughtRecords; await saveThoughtRecords(); }
       if (data.devNotes) { devNotes = data.devNotes; try { await window.storage.set('dev-notes', JSON.stringify(devNotes), false); } catch(e){} }
       if (data.stageNotes) { stageNotes = data.stageNotes; try { await window.storage.set('stage-notes', JSON.stringify(stageNotes), false); } catch(e){} }
       if (data.caseAnswers) { caseAnswers = data.caseAnswers; try { await window.storage.set('case-answers', JSON.stringify(caseAnswers), false); } catch(e){} }
